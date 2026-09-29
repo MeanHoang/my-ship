@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<!--
+  KHUNG CHUẨN cho report.html của /ship-auto (cuối lần chạy tự động).
+  Copy file này → thay phần {{...}} → KHÔNG sửa <style> (chép nguyên từ plan-doc.html).
+
+  Người đọc: anh, vừa quay lại máy, KHÔNG xem lúc AI chạy. Thứ tự section = thứ tự anh cần:
+    1 Cần anh quyết (quyết định AI tự chốt + việc bị park) — luôn đứng ĐẦU
+    2 Đã build theo phase (bằng chứng: ảnh / test / commit)
+    3 Review · 4 Chưa xong & rủi ro · 5 Tự kiểm nhanh · 6 Nhật ký chạy
+  Luật: mọi dòng "đã xong" phải có bằng chứng (ảnh trong tmp/shots, output test, sha).
+  Không có bằng chứng → ghi ở section 4, không được ghi là xong.
+-->
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>{{Tên task}} — báo cáo auto</title>
+<style>.
+
+  Lý do có template: 12 plan.html cũ mỗi cái một kiểu — chỉ 5/12 có TOC ghim trái,
+  1/12 có dark-mode. Anh đã phàn nàn "thiết kế lại được không, làm thành 1 bộ khung đi"
+  + "mục lục ghim bên trái cố định". Khung này là câu trả lời — đừng tự chế lại.
+
+  6 section cố định: 1 Tổng quát · 2 Phân tích hiện trạng · 3 Trade-offs
+                     4 Plan theo phase · 5 Risks · 6 Điểm cần chốt
+
+  Class có sẵn (dùng lại, đừng tạo class mới):
+    .goal                  hộp 🎯 mục tiêu (section 1)
+    .callout .danger|.warn|.ok   spec-vs-code correction, cảnh báo, kết luận đã verify
+    .badge   .ok|.warn|.danger|.q   trạng thái ngắn trong bảng ("Rõ", "Cần chốt Q1")
+    .phase   .done         card phase; thêm .done khi phase xong (nền xanh)
+    .item-tag              số thứ tự tròn cho item trong bảng
+    .muted                 chú thích nhỏ, xám
+-->
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>{{Tên task}} — plan</title>
+<style>
+:root{
+  --accent:#2f6df6; --accent-soft:#eaf1ff; --ink:#1a2233; --muted:#5b6577;
+  --ok:#0a7f4f; --ok-bg:#e6f6ee; --warn:#a05a00; --warn-bg:#fff4e0;
+  --danger:#b42318; --danger-bg:#fdebe9; --card:#ffffff; --line:#e3e8f0; --bg:#f5f7fb;
+  --th:#f0f4fb; --code-bg:#eef1f6; --phase-bg:#fbfcff;
+}
+@media (prefers-color-scheme:dark){
+  :root{
+    --accent:#7c9bff; --accent-soft:#1c2942; --ink:#e6ebf5; --muted:#94a3b8;
+    --ok:#4ade80; --ok-bg:#12301f; --warn:#fbbf24; --warn-bg:#332608;
+    --danger:#f87171; --danger-bg:#3a1614; --card:#151c2b; --line:#2a3446; --bg:#0d121d;
+    --th:#1c2431; --code-bg:#1c2431; --phase-bg:#131a27;
+  }
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+section.card[id]{scroll-margin-top:16px}
+body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;color:var(--ink);background:var(--bg);line-height:1.6}
+.sidebar{position:fixed;inset:0 auto 0 0;width:260px;background:#0f172a;color:#cbd5e1;display:flex;flex-direction:column;padding:22px 14px;overflow-y:auto}
+.sidebar .brand{padding:2px 12px 16px;border-bottom:1px solid rgba(255,255,255,.09);margin-bottom:14px}
+.sidebar .brand .kicker{font-size:11px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:#7c9bff;margin-bottom:6px}
+.sidebar .brand h1{margin:0;font-size:15px;line-height:1.45;color:#fff;font-weight:700}
+.sidebar .brand h1 code{background:rgba(124,155,255,.16);color:#aac2ff;padding:1px 6px;border-radius:5px;font-size:12.5px}
+nav.toc{display:flex;flex-direction:column;gap:2px}
+nav.toc a{display:flex;align-items:baseline;gap:10px;color:#cbd5e1;text-decoration:none;font-size:13.5px;font-weight:500;padding:8px 12px;border-radius:8px;border-left:2px solid transparent}
+nav.toc a .num{font-size:11px;font-weight:700;color:#64748b;min-width:14px}
+nav.toc a:hover{background:rgba(255,255,255,.06);color:#fff}
+nav.toc a.active{background:rgba(124,155,255,.14);color:#fff;border-left-color:#7c9bff}
+.sidebar .side-note{margin-top:auto;padding:14px 12px 4px;font-size:11.5px;line-height:1.5;color:#64748b;border-top:1px solid rgba(255,255,255,.09)}
+main{margin-left:260px}
+.hero{background:linear-gradient(135deg,#2f6df6,#5b8bff);color:#fff;padding:34px 40px}
+.hero h1{margin:0 0 8px;font-size:24px}
+.hero p{margin:4px 0;opacity:.92;max-width:900px}
+.hero .verdict{display:inline-block;margin-top:12px;background:rgba(255,255,255,.18);border:1px solid rgba(255,255,255,.5);border-radius:999px;padding:6px 16px;font-weight:700}
+.wrap{max-width:1040px;margin:0 auto;padding:28px 40px 80px}
+@media (max-width:1100px){
+  .sidebar{position:sticky;inset:auto;top:0;width:auto;flex-direction:row;align-items:center;gap:4px;padding:10px 16px;z-index:20;overflow-x:auto}
+  .sidebar .brand{display:none}
+  .sidebar .side-note{display:none}
+  nav.toc{flex-direction:row}
+  nav.toc a{white-space:nowrap;border-left:0;border-bottom:2px solid transparent;border-radius:8px 8px 0 0}
+  nav.toc a.active{border-left:0;border-bottom-color:#7c9bff}
+  main{margin-left:0}
+  section.card[id]{scroll-margin-top:64px}
+}
+section.card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:24px 28px;margin-bottom:22px;box-shadow:0 2px 8px rgba(26,34,51,.05);overflow-x:auto}
+section.card h2{margin:0 0 14px;font-size:20px;color:var(--accent)}
+h3{font-size:16px;margin:20px 0 8px}
+.goal{background:var(--accent-soft);border-left:4px solid var(--accent);border-radius:8px;padding:14px 18px;margin:12px 0}
+.callout{border-radius:8px;padding:12px 16px;margin:12px 0;border-left:4px solid}
+.callout.danger{background:var(--danger-bg);border-color:var(--danger)}
+.callout.warn{background:var(--warn-bg);border-color:var(--warn)}
+.callout.ok{background:var(--ok-bg);border-color:var(--ok)}
+table{width:100%;border-collapse:collapse;margin:12px 0;font-size:14px}
+th,td{border:1px solid var(--line);padding:8px 10px;text-align:left;vertical-align:top}
+th{background:var(--th)}
+code{background:var(--code-bg);border-radius:4px;padding:1px 5px;font-size:13px;font-family:ui-monospace,SFMono-Regular,Menlo,monospace}
+pre{background:#0f172a;color:#dbe4f5;border-radius:8px;padding:14px 16px;overflow-x:auto;font-size:13px}
+pre code{background:none;color:inherit;padding:0}
+.badge{display:inline-block;border-radius:999px;padding:2px 10px;font-size:12px;font-weight:700}
+.badge.ok{background:var(--ok-bg);color:var(--ok)}
+.badge.warn{background:var(--warn-bg);color:var(--warn)}
+.badge.danger{background:var(--danger-bg);color:var(--danger)}
+.badge.q{background:#ede9fe;color:#5b21b6}
+@media (prefers-color-scheme:dark){.badge.q{background:#2e1f52;color:#c4b5fd}}
+.phase{border:1px solid var(--line);border-radius:10px;padding:16px 20px;margin:14px 0;background:var(--phase-bg)}
+.phase h4{margin:0 0 6px;font-size:15px}
+.phase.done{background:var(--ok-bg);border-color:var(--ok)}
+.muted{color:var(--muted);font-size:13px}
+ul{margin:8px 0;padding-left:22px}
+.item-tag{display:inline-block;background:var(--accent);color:#fff;border-radius:6px;padding:1px 8px;font-size:12px;font-weight:700;margin-right:6px}
+</style>
+</head>
+<body>
+<aside class="sidebar">
+  <div class="brand">
+    <div class="kicker">Auto run · Báo cáo</div>
+    <h1>{{Tên task}} <code>{{branch}}</code></h1>
+  </div>
+  <nav class="toc">
+    <a href="#s1"><span class="num">1</span>Cần anh quyết</a>
+    <a href="#s2"><span class="num">2</span>Đã build</a>
+    <a href="#s3"><span class="num">3</span>Review</a>
+    <a href="#s4"><span class="num">4</span>Chưa xong &amp; rủi ro</a>
+    <a href="#s5"><span class="num">5</span>Tự kiểm nhanh</a>
+    <a href="#s6"><span class="num">6</span>Nhật ký chạy</a>
+  </nav>
+  <div class="side-note">{{Chạy từ HH:MM ngày X đến HH:MM ngày Y · chưa push}}</div>
+</aside>
+<main>
+<div class="hero">
+  <h1>{{Tên task}} — {{kết luận 1 dòng: xong / xong một phần / dừng vì …}}</h1>
+  <p>{{2 câu: đã build gì, còn gì. Plan gốc: plan.html (Gate 2 ngày X).}}</p>
+  <span class="verdict">{{X/Y phase xong · N quyết định AI tự chốt · M việc chờ anh · 0 push}}</span>
+</div>
+<div class="wrap">
+
+<section class="card" id="s1">
+<h2>1. Cần anh quyết</h2>
+<h3>Quyết định AI tự chốt (giữ hay đảo)</h3>
+<!-- Chép từ decisions.md, mỗi D-auto-N một dòng. Cột "Đảo ngược" là lệnh copy-paste được. -->
+<table>
+<tr><th>#</th><th>AI chọn</th><th>Vì (luật nào trong auto-decide §2 + chứng cứ)</th><th>Đã loại</th><th>Đảo ngược</th></tr>
+<tr><td><span class="item-tag">D-auto-1</span></td><td>{{...}}</td><td>{{luật 2 — pattern có sẵn · <code>file.js:line</code>}}</td><td>{{phương án B — vì sao bỏ}}</td><td><code>git revert {{sha}}</code> → {{làm gì thay}}</td></tr>
+</table>
+<p class="muted">Trả lời theo từng dòng: "giữ D-auto-1" hoặc "đảo D-auto-1".</p>
+<h3>Việc bị park (AI không được tự quyết)</h3>
+<table>
+<tr><th>Việc</th><th>Vì sao park (auto-decide §3)</th><th>Chặn phase nào</th><th>Lựa chọn + đề xuất</th></tr>
+<tr><td>{{...}}</td><td><span class="badge danger">{{ghi data thật / đổi GOAL / …}}</span></td><td>{{Phase N}}</td><td>{{A / B — đề xuất A vì …}}</td></tr>
+</table>
+</section>
+
+<section class="card" id="s2">
+<h2>2. Đã build theo phase</h2>
+<div class="phase done">
+  <h4>Phase 1 — {{tên}} <span class="badge ok">✅ {{sha}}</span></h4>
+  <p><b>Pattern:</b> <code>{{file.js:line}}</code> — {{tên hàm}}</p>
+  <ul>
+    <li><code>{{file}}</code> — {{sửa gì, 1 dòng}}</li>
+  </ul>
+  <p><b>Bằng chứng:</b> {{BE: test <code>tên test</code> FAIL → PASS (4 dòng output cuối) · FE: ảnh}}</p>
+  <p>{{<img src="tmp/shots/phase1-before.png" width="48%"> <img src="tmp/shots/phase1-after.png" width="48%">}}</p>
+  <p class="muted"><b>Review phase:</b> {{N finding must-fix đã sửa trong cùng phase · hoặc "sạch"}}</p>
+</div>
+</section>
+
+<section class="card" id="s3">
+<h2>3. Review cuối (K5, cả branch)</h2>
+<table>
+<tr><th>Mức</th><th>file:line</th><th>Vấn đề + tình huống cụ thể</th><th>Đã làm</th></tr>
+<tr><td><span class="badge warn">{{should-fix}}</span></td><td><code>{{file:line}}</code></td><td>{{...}}</td><td>{{đã sửa ở {{sha}} / để anh quyết}}</td></tr>
+</table>
+</section>
+
+<section class="card" id="s4">
+<h2>4. Chưa xong &amp; rủi ro</h2>
+<table>
+<tr><th>Cái gì</th><th>Vì sao chưa</th><th>Cần gì để xong</th></tr>
+<tr><td>{{Phase N verify FE}}</td><td>{{Claude in Chrome mất kết nối}}</td><td>{{anh bật lại extension → em chụp lại}}</td></tr>
+</table>
+<div class="callout warn"><b>Rủi ro còn lại:</b> {{shop cũ không có field mới · surface khác dùng chung … — kèm file:line}}</div>
+</section>
+
+<section class="card" id="s5">
+<h2>5. Tự kiểm nhanh (10 phút)</h2>
+<pre><code>git log --oneline origin/master..HEAD      # {{N}} commit, không có gì đã push
+{{lệnh chạy test của các phase BE}}
+{{/dev-start scope + URL cần mở để xem phase FE}}</code></pre>
+</section>
+
+<section class="card" id="s6">
+<h2>6. Nhật ký chạy</h2>
+<table>
+<tr><th>Bắt đầu</th><th>Kết thúc</th><th>Phase xong</th><th>Commit</th><th>Dừng vì</th></tr>
+<tr><td>{{...}}</td><td>{{...}}</td><td>{{X/Y}}</td><td>{{N}}</td><td>{{hết việc / kẹt ở … (hook cho dừng sau 2 lần không tiến triển)}}</td></tr>
+</table>
+</section>
+
+</div>
+</main>
+<script>
+const links = [...document.querySelectorAll('nav.toc a')];
+const obs = new IntersectionObserver(es => es.forEach(e => {
+  if (!e.isIntersecting) return;
+  links.forEach(a => a.classList.toggle('active', a.getAttribute('href') === '#' + e.target.id));
+}), {rootMargin: '-10% 0px -80% 0px'});
+document.querySelectorAll('section.card[id]').forEach(s => obs.observe(s));
+</script>
+</body>
+</html>
