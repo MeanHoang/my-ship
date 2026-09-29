@@ -13,7 +13,7 @@ SRC="$(cd "$(dirname "$0")/.." && pwd)"          # .claude of the source project
 DEST="${1:?usage: ship-export.sh <dest-repo-dir>}"
 [ -d "$DEST/.git" ] || { echo "$DEST is not a git repo"; exit 1; }
 
-SKILLS=(ship ship-auto ship-bugs ship-fix ship-verify ship-review ship-board)
+SKILLS=(ship ship-new ship-auto ship-bugs ship-fix ship-verify ship-review ship-board)
 HOOKS=(ship-mode-card ship-auto-continue ship-auto-guard ship-scope-guard ship-state-sync ship-context-restore branch-guard)
 SCRIPTS=(ship-auto-run.sh ship-board.sh ship-export.sh)
 

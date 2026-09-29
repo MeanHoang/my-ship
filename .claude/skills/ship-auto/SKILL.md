@@ -32,7 +32,7 @@ For big features the owner leaves the machine running. Gate 1 and Gate 2 are **u
 ## End
 1. K5 once over the whole branch (cross-phase issues). Must-fix → own commit; the rest go to the report.
 2. Render `.claude/skills/ship/templates/report.html` → `.claude/ship/<slug>/report.html` (copy, fill placeholders, never edit its `<style>`), `open` it.
-3. State: `auto: done`, `awaiting: user`; NOW → "AUTO xong — đọc report.html"; "Waiting on user" = the parked list + the D-auto decisions to confirm.
+3. State: `auto: done`, `awaiting: user`; NOW → "AUTO xong — đọc report.html"; "Waiting on user" = the parked list + the D-auto decisions to confirm. Every parked scope/UX item carries a product Decide card (block P, `opus`) so he can decide in one read.
 4. Never push, deploy or post to the task tracker / chat.
 
 ## Owner back

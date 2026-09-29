@@ -17,20 +17,21 @@ K0, then route per ship-core "Which skill". Existing branch/progress → `mode: 
 | # | Step | Block | Role | Stop? |
 |---|---|---|---|---|
 | 1 | Verify the spec | 1a | scout | — |
-| 2 | Understand (business) | 1b–1d | parent | 🚦 **Gate 1** (one question per turn) |
-| 3 | Gather facts | 2a | one scout for all surfaces by default | — |
-| 4 | Decide trade-offs, split phases, render plan | 2b, 2c, 2d | parent (2d: subagent) | 🚦 **Gate 2** |
-| 5 | Per phase: code → confirm | K3 → K4 | implementer → verifier; phases with disjoint files may run in parallel | discoveries only |
-| 6 | Per phase: commit | K6 | parent | 🚦 "commit" |
-| 7 | After all phases: review once | K5 | reviewer | findings → own fix commits |
-| 8 | Push / deploy / retest | K7 | parent + verifier | only when told |
+| 2 | Product: current state + research → proposal + mockup → compare with spec | P1 → P2 → P3 | product (blind to the spec's solution until P3) | 🚦 owner decides |
+| 3 | Understand (business) | 1b–1d | parent | 🚦 **Gate 1** (one question per turn) |
+| 4 | Gather facts | 2a | one scout for all surfaces by default | — |
+| 5 | Decide trade-offs, split phases, render plan | 2b, 2c, 2d | parent (2d: subagent) | 🚦 **Gate 2** |
+| 6 | Per phase: code → confirm | K3 → K4 | implementer → verifier; phases with disjoint files may run in parallel | discoveries only |
+| 7 | Per phase: commit | K6 | parent | 🚦 "commit" |
+| 8 | After all phases: review once | K5 | reviewer | findings → own fix commits |
+| 9 | Push / deploy / retest | K7 | parent + verifier | only when told |
 
 ### Gate 1 — Understand
-The project's spec tool (profile §1): 1a verify (scout, `file:line`, real numbers — a query that can settle a point settles it here), 1b write `analysis.md` (§1 domain · §2 who hurts, how many · §3 what the app does today · §4 gap · §5 open-points ledger · §6 GOAL empty), 1c grill **one question per turn** — only what he can answer without reading code, 1d fill §6 GOAL with him and copy it into `decisions.md`. No plan here. Ends on his explicit move ("ok", "bước 2", "tiếp" — proceed, not commit).
+The project's spec tool (profile §1): 1a verify (scout, `file:line`, real numbers — a query that can settle a point settles it here), then block P (P1 current state + research → P2 proposal + mockup → P3 compare with the spec; the parent gives the product role only the goal, never the spec's solution, until P3) — the owner decides on the verdict, mockup and differences before any plan, 1b write `analysis.md` (§1 domain · §2 who hurts, how many · §3 what the app does today · §4 gap · §5 open-points ledger · §6 GOAL empty), 1c grill **one question per turn** — only what he can answer without reading code, 1d fill §6 GOAL with him and copy it into `decisions.md`. No plan here. Ends on his explicit move ("ok", "bước 2", "tiếp" — proceed, not commit).
 
 ### Gate 2 — Plan (all verification and all open questions end here)
 - **2a Gather (read-only)** — ONE scout covering every touched surface + backend path by default (parallel scouts each re-read the same shared code — HN: *"launched 7 sub agents which burned through my budget"*); split only for surfaces that share no code. Each confirms/refutes the spec with `file:line` and, per surface, checks: field-trigger loops, the settings chain (profile §2), whether the surface is live, existing users without the new data, database indexes. Output `facts.md`: `claim | verdict | file:line`.
-- **2b Decide 🚦** — load only spec + `analysis.md` + `facts.md`. Facts kill questions first. Ledger = `analysis.md` §5, posted each round. One question at a time, blockers first, grill-me shape. **2b may not end while any §5 row is open**; before asking whether it is settled post *"Chưa đụng tới: … · Không verify được: … · Giả định còn lại: …"* — sweep other surfaces (profile §2), live users, rollback, data written before the change, other readers of changed fields. Settled decisions (why + rejected option) → `decisions.md`.
+- **2b Decide 🚦** — load only spec + `analysis.md` + `facts.md`. Facts kill questions first. Ledger = `analysis.md` §5, posted each round. One question at a time, blockers first, grill-me shape. A trade-off that changes what users see, scope, or cost to users → product Decide card (block P) in the question. **2b may not end while any §5 row is open**; before asking whether it is settled post *"Chưa đụng tới: … · Không verify được: … · Giả định còn lại: …"* — sweep other surfaces (profile §2), live users, rollback, data written before the change, other readers of changed fields. Settled decisions (why + rejected option) → `decisions.md`.
 - **2c Split 🚦** — small phases by flow/surface, each separately reviewable; inner order config UI → backend → end-user surface. You propose the grouping; **he settles the order** (*"Phase nào anh muốn thấy chạy trước?"* · *"Cái nào rơi khỏi v1?"*). 5–10 lines per phase in chat (changes, files, Pattern line, verify line).
 - **2d Render (subagent)** — copy `templates/plan-doc.html`, fill placeholders, never edit its `<style>`. Sections: 1 overview + goal · 2 current state · 3 trade-offs · 3b modules touched (incl. **who else uses it**) · 4 phases (Pattern line + fix + verify) · 5 risks · 6 open points · 7 out of scope · **Review Focus**: the edge inputs no phase test covers yet (defaults: profile §12), each with the test that pins it in the phase that owns the code. `open` it + 3–5 line gist. Decision changes go back to 2b.
 - After his "move": **generate `progress.md` from `plan.html` §4** — each phase `### ⬜ Phase N — name`, its Pattern line, one `- [ ]` per `<li>` naming its file, its Verify line, plus the template's fixed rows. "move auto" → `/ship-auto`.

@@ -16,7 +16,7 @@ Applies only while `auto: on` in the `<!-- state -->` block of `progress.md`. Th
 Still tied → take the option a scout can verify with a test or screenshot, and say so.
 
 ## 3. Never decide alone — PARK instead
-Park = write it under "Waiting on user" in `progress.md`, keep the dependent checkboxes and prefix their text with `⏸` (`- [ ] ⏸ …` — never delete a box, the guard hook denies it), move on to independent work.
+Park = write it under "Waiting on user" in `progress.md` (scope / UX items: with a product Decide card, block P), keep the dependent checkboxes and prefix their text with `⏸` (`- [ ] ⏸ …` — never delete a box, the guard hook denies it), move on to independent work.
 - Writing, migrating, backfilling or deleting real data.
 - Changing the GOAL, the scope list, or what end users see beyond the approved plan.
 - Queries or jobs whose cost grows with data size.

@@ -10,7 +10,7 @@
 slug: {{task-slug}}
 branch: {{feature/task-slug}}
 kind: {{feature|bugfix}}
-mode: {{SHIP|CONTINUE|STABILIZE|LITE}}
+mode: {{SHIP|CONTINUE|STABILIZE|LITE|NEW}}
 auto: {{off|on|done}}
 auto_driver: {{script|session — only while auto: on}}
 auto_until: {{YYYY-MM-DD HH:MM | none}}

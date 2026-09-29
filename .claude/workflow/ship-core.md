@@ -2,13 +2,14 @@
 
 Read by `/ship`, `/ship-auto`, `/ship-bugs`, `/ship-fix`, `/ship-verify`, `/ship-review`. Project-specific facts live in `.claude/ship-profile.md` (**profile §N**).
 
-**Pieces:** blocks `.claude/workflow/blocks/K0…K7` (what each step does) · roles `.claude/roles/*.md` + profile §11 (who does it — paste both into every subagent prompt) · `.claude/workflow/grill-me.md` (when and how to ask) · `.claude/workflow/auto-decide.md` (deciding alone, auto only) · templates `.claude/skills/ship/templates/`.
+**Pieces:** blocks `.claude/workflow/blocks/K0…K7` + `P-product.md` (what each step does) · roles `.claude/roles/*.md` + profile §11 (who does it — paste both into every subagent prompt) · `.claude/workflow/grill-me.md` (when and how to ask) · `.claude/workflow/auto-decide.md` (deciding alone, auto only) · templates `.claude/skills/ship/templates/`.
 
 ## Which skill (Step 0 of every flow)
 Run **K0**, read the state (`/branch-focus`, the task source's status + latest comments, existing `.claude/ship/<slug>/progress.md`), then say which flow and why in one line (he can overrule):
 
 | Signals | Flow | `mode:` in state |
 |---|---|---|
+| Brand-new app / empty repo, from an idea | `/ship-new` | `NEW` |
 | The whole diff fits in ONE sentence — one surface, no new setting/field, no shared component | `/ship-fix` | `LITE` |
 | Task not started, needs understanding + a plan | `/ship` | `SHIP` |
 | Branch has commits / `progress.md` exists | `/ship` (resume) | `CONTINUE` |
@@ -33,6 +34,7 @@ Parent = this session: orchestrates, verifies, asks, commits (`roles/parent.md`)
 |---|---|---|
 | parent | the session's own (owner picks); `/ship-auto` phase sessions inherit it | decides, talks to the owner |
 | scout | `opus` | judgement-heavy reading; where invented facts start |
+| product | `opus` | worth-it / scope judgement; research with sources |
 | reviewer | `opus` | judgement; a weak review lets bugs through |
 | implementer | `sonnet` | follows a plan with a pattern reference; checked by verifier + reviewer. New implementer after two rejected fixes → `opus` |
 | verifier | `sonnet` | runs tests / drives the browser; evidence is machine-checked |
@@ -43,13 +45,14 @@ A project may override this table in profile §7.
 ## Discoveries mid-implementation
 Coding surfaces things planning could not — normal, not failure. Name the size, follow its path; never keep coding past it silently.
 - **A — technical trade-off** (which file/approach, an unpriced coupling). Stop the item, ask in the 2b rhythm (fact `file:line`, options, recommendation). New evidence → `facts.md`; new open point → `analysis.md` §5. Settled → `decisions.md`, edit only that phase card in `plan.html`, re-project `progress.md`. Resume.
-- **B — the map was wrong** (Gate 1 belief false). Correct `analysis.md` with evidence. **Gate:** *"bản đồ mình duyệt ở Gate 1 sai chỗ này — …"*, say whether the GOAL still holds; he decides. Then as A.
-- **C — the direction changed** (a surface drops in/out, the split no longer makes sense). Re-enter 2c for the remaining work only; committed phases stay. Append **why** to `decisions.md`.
+- **B — the map was wrong** (Gate 1 belief false). Correct `analysis.md` with evidence; product role writes a Decide card (block P). **Gate:** *"bản đồ mình duyệt ở Gate 1 sai chỗ này — …"*, say whether the GOAL still holds; he decides. Then as A.
+- **C — the direction changed** (a surface drops in/out, the split no longer makes sense). Product Decide card first (block P); then re-enter 2c for the remaining work only; committed phases stay. Append **why** to `decisions.md`.
 Test: does it change what the code does (A), what we believed (B), or what we build next (C)? In `/ship-auto` the same test runs through `auto-decide.md`.
 
 ## Artifact contract (`.claude/ship/<slug>/`, never committed)
 | File | Lifetime | Contains |
 |---|---|---|
+| `product.md` | whole task (updated, not redone) | one-screen product brief + verdict (block P) |
 | `analysis.md` | whole task (correctable per B) | the one doc for HIM while planning: §1–§6; §5 = the single open-points ledger |
 | `facts.md` | append-only | `claim \| verdict \| file:line`; no recommendations; he does not read it |
 | `plan.html` | rendered at 2d, re-rendered on A/C | the plan; source of the checklist |
@@ -73,4 +76,4 @@ Laws: `progress.md` is a projection of the plan (or bug list), not a journal —
 - Blocked or ambiguous → ask in grill-me shape; narrate while working; every decision carries its number.
 
 ## Portability — moving the kit to another repo
-Copy: `.claude/skills/ship*/`, `.claude/workflow/` (blocks, ship-core, grill-me, auto-decide, mode-cards), `.claude/roles/`, hooks `ship-*.sh` + `branch-guard.sh`, `.claude/scripts/ship-auto-run.sh`, and their wiring in `settings.local.json`. Then write that repo's `.claude/ship-profile.md` with the same section numbers (§1 repo basics · §2 surfaces · §3 real settings · §4 test targets/browser · §5 dev stack · §6 auth · §7 implementers/models · §8 review command · §9 ship · §10 auto park extras · §11 Standards per role · §12 Review Focus defaults). Add `.claude/ship/` to `.git/info/exclude`.
+Copy: `.claude/skills/ship*/` (incl. `ship-new`), `.claude/workflow/` (blocks, ship-core, grill-me, auto-decide, mode-cards), `.claude/roles/`, hooks `ship-*.sh` + `branch-guard.sh`, `.claude/scripts/ship-auto-run.sh`, and their wiring in `settings.local.json`. Then write that repo's `.claude/ship-profile.md` with the same section numbers (§1 repo basics · §2 surfaces · §3 real settings · §4 test targets/browser · §5 dev stack · §6 auth · §7 implementers/models · §8 review command · §9 ship · §10 auto park extras · §11 Standards per role · §12 Review Focus defaults · §13 product context). Add `.claude/ship/` to `.git/info/exclude`.

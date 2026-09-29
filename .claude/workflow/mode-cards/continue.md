@@ -6,3 +6,4 @@ MODE CONTINUE (/ship, resumed feature) — applies to EVERY message in this sess
 - After the last phase: K5 once. Push/deploy only when told.
 - Owner rejected the same fix twice → stop, log what failed in decisions.md, new implementer with a rewritten brief.
 - Every dispatch passes `model`: scout/reviewer `opus`, implementer/verifier `sonnet` (ship-core table).
+- Product questions (worth it? what users see? cut or keep?) → product role, block P (Gate 1: P1 research → P2 proposal + mockup → P3 compare with the spec — the role gets only the goal until P3; Decide card at 2b/B/C).

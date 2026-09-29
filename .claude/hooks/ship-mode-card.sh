@@ -60,7 +60,7 @@ mode = field("mode")
 auto = field("auto")
 cards = os.path.join(root, ".claude", "workflow", "mode-cards")
 parts = []
-for name in ([mode] if mode in ("ship", "continue", "stabilize", "lite") else []) + (["auto"] if auto == "on" else []):
+for name in ([mode] if mode in ("ship", "continue", "stabilize", "lite", "new") else []) + (["auto"] if auto == "on" else []):
     f = os.path.join(cards, f"{name}.md")
     if os.path.isfile(f):
         parts.append(open(f, encoding="utf-8").read().strip())

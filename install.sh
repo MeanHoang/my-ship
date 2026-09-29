@@ -68,7 +68,7 @@ PY
 GITDIR="$(git -C "$PRJ" rev-parse --git-common-dir)"; case "$GITDIR" in /*) ;; *) GITDIR="$PRJ/$GITDIR";; esac
 EX="$GITDIR/info/exclude"; mkdir -p "$(dirname "$EX")"; touch "$EX"
 for e in .claude/ship/ .claude/ship-profile.md .claude/settings.local.json .claude/workflow/ .claude/roles/ \
-         .claude/skills/ship .claude/skills/ship-auto .claude/skills/ship-bugs .claude/skills/ship-fix \
+         .claude/skills/ship .claude/skills/ship-new .claude/skills/ship-auto .claude/skills/ship-bugs .claude/skills/ship-fix \
          .claude/skills/ship-verify .claude/skills/ship-review .claude/skills/ship-board \
          .claude/hooks/ship-mode-card.sh .claude/hooks/ship-auto-continue.sh .claude/hooks/ship-auto-guard.sh \
          .claude/hooks/ship-scope-guard.sh .claude/hooks/ship-state-sync.sh .claude/hooks/ship-context-restore.sh \

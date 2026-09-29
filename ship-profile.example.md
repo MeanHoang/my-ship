@@ -53,6 +53,17 @@ Rules that only hold in this repo, grouped under `### scout`, `### implementer`,
 ### implementer
 ### reviewer
 ### verifier
+### product
+Product principles specific to this product (on top of roles/product.md), e.g. "no new setting without a real user need".
 
 ## §12 Review Focus defaults
 Edge inputs every plan must test in this repo (existing users without the new field, feature flag off, empty state, non-English locale, very large accounts…).
+
+## §13 Product context (for the product role)
+- Who we are: the product, what we already do well, unfair advantages (the product role's "why us").
+- Who the users are (segments) and who pays.
+- Where evidence lives, cheapest first: support tickets, chats, analytics queries (read-only), app-store / marketplace reviews, sales notes.
+- Known alternatives / competitors — or "research per task with dated sources".
+
+## §14 Design system for mockups (product role, P2)
+Which look the product role's HTML mockups should copy: component library / design tokens, the skill or doc that describes them, reference screens, target widths. New app with none yet → "clean neutral".

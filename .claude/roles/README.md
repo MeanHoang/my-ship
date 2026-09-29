@@ -18,6 +18,7 @@
 | scout | `scout.md` | K1, feature 1a/2a |
 | implementer | `implementer.md` | K3 (code) |
 | verifier | `verifier.md` | K2, K3 live try, K4, K7 retest |
+| product | `product.md` | P (Discover at the start, Decide at product decision points) |
 | reviewer | `reviewer.md` | K5 |
 
 Every role file has exactly: Does / Does not / Input / Output / Stop when / Standards.
