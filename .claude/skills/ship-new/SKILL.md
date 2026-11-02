@@ -12,8 +12,8 @@ Why a separate skill: `/ship` assumes existing code (pattern-reference gate, "wh
 | # | Step | Who | Stop? |
 |---|---|---|---|
 | 0 | K0 (repo, branch `main`/`feature/bootstrap`, `.claude/ship/<slug>/`, `mode: NEW`) | parent | — |
-| 1 | **Gate 0 · Product** — block P: P1 research (+ forcing questions, one per turn, max 4) → P2 proposal + **mockup of the key screens**, `product.md`, verdict | product (`opus`) | 🚦 build / reframe / kill + mockup approved |
-| 2 | **Gate 1 · Stack & architecture** — 2–3 options (languages, framework, data store, hosting, auth), each with fit to `product.md` §6–7, cost, lock-in, what the owner already knows; the minimal option is always one of them | scout (`opus`) researches, parent presents | 🚦 owner picks; ADR lines → `decisions.md` |
+| 1 | **Gate 0 · Product** — block P: P1 research (+ forcing questions, one per turn, max 4) → P2 proposal + **mockup of the key screens**, `product.md`, verdict | product (`sonnet`) | 🚦 build / reframe / kill + mockup approved |
+| 2 | **Gate 1 · Stack & architecture** — 2–3 options (languages, framework, data store, hosting, auth), each with fit to `product.md` §6–7, cost, lock-in, what the owner already knows; the minimal option is always one of them | scout (`sonnet`) researches, parent presents | 🚦 owner picks; ADR lines → `decisions.md` |
 | 3 | **Phase 0 · Walking skeleton** — plan it like a `/ship` phase: repo scaffold from the official template/generator, lint + format, test runner with ONE real test, dev command, CI running lint + tests, and ONE thin end-to-end flow of the core job (UI → logic → storage) with a test | implementer (`sonnet`) → verifier (`sonnet`) | 🚦 commit |
 | 4 | **Write the profile** — draft `.claude/ship-profile.md` from what now exists (§1 base branch, §2 surfaces, §4 test targets, §5 dev commands, §7 implementers, §8 review command, §9 ship, §12 edge cases from `product.md` §8) + §13 from `product.md` | parent | 🚦 owner reads it |
 | 5 | Hand-off: each next feature = `/ship` (Gate 1 reuses `product.md`), or `/ship-auto` after its Gate 2 | — | — |

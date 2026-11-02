@@ -49,7 +49,7 @@ Ký hiệu phase: ⬜ chưa làm · 🔄 đang code · 👀 đã báo cáo, ch�
 - [ ] {{file cần sửa}} — {{sửa gì cụ thể}}
 - [ ] eslint clean on changed lines
 - [ ] Verify (K4): {{from the plan's Verify line — after-screenshot / fail→pass test}}
-- [ ] Report phase → user says "commit" → commit (K6)
+- [ ] Report phase → commit (K6, automatic)
 
 ### ⬜ Phase 2 — {{...}}
 
@@ -58,7 +58,7 @@ Ký hiệu phase: ⬜ chưa làm · 🔄 đang code · 👀 đã báo cáo, ch�
 - [ ] {{...}}
 - [ ] eslint clean on changed lines
 - [ ] Verify (K4): {{...}}
-- [ ] Report phase → user says "commit" → commit (K6)
+- [ ] Report phase → commit (K6, automatic)
 
 ---
 

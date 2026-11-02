@@ -23,12 +23,23 @@ Measured on several thousand owner messages across months of real sessions: the 
 ```
 Gate 1 🚦 understand: analysis.md, one question per turn, write the GOAL together
 Gate 2 🚦 plan: 1 scout gathers facts → decide trade-offs → split small phases (you pick the order) → plan.html
-Per phase: implementer codes (must name the existing pattern it copies)
-           → verifier proves it (screenshots / failing→passing test + "fails again when the fix is removed")
-           → 🚦 you say "commit"
-After the last phase: one review round (must-fix vs optional) → push only when told
+Gate 2 also turns every GOAL line into an ACC: check (a test with real input/expected value, or a page + what must show)
+Code all phases: implementer writes the ACC tests FIRST (they must fail), then codes until they pass,
+                 naming the existing pattern it copies
+diff-guard (machine checks of your review rules) → ONE review: "right thing?" + "right code?" (must-fix needs proof)
+→ auto-commit one per phase → ONE verify over all phases incl. a walk through every GOAL line on the real app
+→ push only when told
 ```
 🚦 = the agent stops and waits. Silence is never consent.
+
+## What's new (2026-11)
+Built from Lauren Tan's "trust ladder" talk (Cursor): you only hand more to an agent once you trust its output, and trust comes from verification plus hard checks, not more prose rules.
+- **Commits are automatic, push is not.** An item commits as soon as its evidence exists (one commit per bug / phase); push, MR and deploy still need you.
+- **`diff-guard.mjs`** turns your repeated review comments into checks (core lines rewritten, `return undefined`, weakened tests, a mapped route removed). Runs at K4, first in K5, and before every commit.
+- **ACC-first:** each GOAL line becomes a concrete check at Gate 2; tests are written before the code.
+- **Two-part review:** "right thing?" (GOAL / ACC covered, nothing extra, nothing misread) and "right code?" — a must-fix needs a failing test or a numbered flow with real values.
+- **`/ship-verify` = browser tool + feature map:** open a feature by name, wait for real content, recover known stuck states, measure alignment instead of eyeballing it. Plus **eval cases** (`evals/cases.md`) to re-test a skill after you edit it.
+- Subagents get file paths to read, not pasted role text.
 
 ## Product role
 A `product` subagent (block P) works in three steps:
@@ -48,11 +59,12 @@ After Gate 2 say **"move auto"** and give a stop time. A driver script runs **on
 | `ship-auto-guard` | in auto mode: blocks editing/deleting existing tests, fixtures and assertions; blocks deleting checklist items |
 | `ship-auto-continue` | keeps a session-driven auto run going; stops on stall (2× no progress) or at the stop time |
 | `ship-state-sync` / `ship-context-restore` | record session id / restore task context after compaction or resume |
+| `diff-guard.mjs` (script) | your review rules as checks; exit 2 = must-fix (config `.claude/diff-guard.json`) |
 | `branch-guard` | blocks `git stash -u`, `git add -A`, commits on a detached HEAD or another task's branch |
 
 ## Model per role (limits)
 Every dispatch passes `model` explicitly (an omitted model inherits the session's, usually the most expensive):
-product `opus` · scout `opus` · reviewer `opus` · implementer `sonnet` · verifier `sonnet` · parent = your session. Override per project in the profile §7.
+every role on `sonnet` by default (product, scout, reviewer, implementer, verifier) · parent = your session. Override per project in the profile §7.
 
 ## Install
 Requirements: Claude Code, `git`, `python3`, `jq`.
@@ -75,7 +87,8 @@ Re-run `install.sh` to update; your profile is never overwritten. The kit and ta
 ├── workflow/mode-cards/       per-mode rule cards injected every turn
 ├── roles/*.md                 parent · product · scout · implementer · verifier · reviewer (+ Standards that grow)
 ├── hooks/                     the guards above
-└── scripts/                   ship-auto-run.sh · ship-board.sh · ship-export.sh
+├── skills/ship*/evals/        eval cases: re-test a skill after editing it
+└── scripts/                   ship-auto-run.sh · ship-board.sh · ship-export.sh · diff-guard.mjs
 ship-profile.example.md        copy to .claude/ship-profile.md and fill
 ```
 

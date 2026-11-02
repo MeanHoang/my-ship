@@ -24,7 +24,7 @@ Task link or description, optional `--note`, the workspace (git worktree) the ow
 5. **Persist `--note`** verbatim into the `<!-- state -->` block as `note:`.
 
 ## Local dev (only if a later block needs it)
-Start, scope, port guard and stop: profile §5. Never kill another worktree's stack. Unit tests, eslint, builds need no lock.
+Start, scope, queue and stop: profile §5 (`dev-stack-queue.mjs acquire` before, `release` right after the verify). Unit tests, eslint, builds need no stack.
 
 ## Output
 One short message: worktree path · branch (and its base) · auth line · ship dir · mode/flow picked and why.
@@ -33,5 +33,5 @@ One short message: worktree path · branch (and its base) · auth line · ship d
 Wrong base, foreign uncommitted changes, or harness missing after bootstrap → ask the owner. Otherwise hand over to K1 (bugs) or Gate 1 (feature).
 
 ## Rules
-- Session boundary: never read or write another task's `.claude/ship/<other>/` ().
+- Session boundary: never read or write another task's `.claude/ship/<other>/` (memory `feedback_one_session_one_task`).
 - Stage explicit paths only, ever. `.claude/ship/` never reaches a commit.

@@ -67,7 +67,7 @@ for p in sorted(glob.glob(os.path.join(root, ".claude/ship/*/progress.md"))):
     awaiting = field("awaiting") if has_state else "—"
     step = field("step") if has_state else "—"
     phase = field("phase") if has_state else "—"
-    rnd = field("round", "0") if has_state else "—"
+    rnd = field("review_round", field("round", "0")) if has_state else "—"
     kind = field("kind", "feature") if has_state else "—"
     verdict = field("verdict", "-") if has_state else "-"
 
@@ -169,7 +169,7 @@ if done_n:
 no_state = [r for r in rows if r["gate"] == "—"]
 if no_state:
     print(f"\n({len(no_state)}/{len(rows)} task chưa có khối `state` — chỉ hiện NOW. Thêm header từ "
-          f"feature-team/templates/progress-header.md để lên bảng đầy đủ.)")
+          f".claude/skills/ship/templates/progress.md để lên bảng đầy đủ.)")
 PY
 
 echo

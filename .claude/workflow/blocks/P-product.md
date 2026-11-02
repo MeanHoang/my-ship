@@ -1,6 +1,6 @@
 # P — Product judgement (Discover / Decide)
 
-**Role:** product (`.claude/roles/product.md` + profile §11 product + §13), `model: opus`. Parent dispatches it; the owner decides.
+**Role:** product (`.claude/roles/product.md` + profile §11 product + §13), `model: sonnet`. Parent dispatches it; the owner decides.
 
 ## When it runs (parent calls it — the owner never has to remember)
 | Moment | Mode |
@@ -26,6 +26,7 @@
    - What happens if we do nothing?
 
 ### P2 · Product proposal + mockup
+- **Base = the real current UI**, not Figma: start from a screenshot of today's widget / admin page on the test store (the project's browser tool (profile §4)), and show the design only as the change on top of it. Preview inside the real editor when one exists; no standalone set of pages. Anything the design does not show is labelled "chưa thiết kế", never invented (owner 2026-10-26 "dừng dựa theo ảnh figma lấy ảnh àny cho sát hiện tại", "dựng editor thôi … cần gì dựng nhiều"; 2026-10-27 "designer đâu có vẽ perk mặt sau").
 1. Options (≥3 incl. the smallest and "do nothing") → recommended v1: appetite, solution, rabbit holes, **no-gos**.
 2. **Mockup — 2 to 4 key screens as local HTML** in the project's real look (profile §14; none → clean neutral), realistic content, the main flow linked between screens.
    - What to draw: the recommended v1. If the verdict is need-data / Kill, draw the **smallest product option** anyway — it becomes the prop for interviews / the landing-page image.

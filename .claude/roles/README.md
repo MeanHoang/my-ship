@@ -8,7 +8,7 @@
 5. Coding/review/naming lessons live here, not in memory. Memory keeps only facts about the owner (language, explanation style, how he works).
 
 ## How roles are used
-- Project-specific Standards live in `.claude/ship-profile.md` §11 under the role's name — paste that section together with the role file. Roles here stay project-neutral.
+- Project-specific Standards live in `.claude/ship-profile.md` §11 under the role's name — point the subagent at that section together with the role file path. Roles here stay project-neutral.
 - The parent pastes the matching role file (path + content) into every subagent prompt, together with the block it runs (`.claude/workflow/blocks/K*.md`). A subagent reads its Standards before working.
 - One subagent = one role. A role that needs another role's work returns to the parent instead of doing it.
 
@@ -23,3 +23,7 @@
 
 Every role file has exactly: Does / Does not / Input / Output / Stop when / Standards.
 
+## Lessons (full detail behind the Standards lines)
+`.claude/roles/lessons/<name>.md` holds the full lesson (why + how to apply + the incident) that a
+Standards line summarises — moved out of the owner's memory on 2026-09-28. A Standards line citing
+`feedback_<name>` means `lessons/<name>.md`; read it when the one-liner is not enough.

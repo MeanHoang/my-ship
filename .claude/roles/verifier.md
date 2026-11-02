@@ -21,11 +21,15 @@ File paths under `.claude/ship/<slug>/tmp/` (`shots/<bug>-1-before.png`, `-2-liv
 The requested evidence exists, or it cannot be produced (say why and what was tried).
 
 ## Standards
+- Open pages only through the project's browser tool (profile §4): environment check first, then open the feature by name from the feature map, then shoot. A feature missing from the map → add it from the page you really opened (agents got stuck improvising URLs and wait loops).
+- Never wait by re-taking screenshots. Wait with the browser tool's ready-on-text command (reads the page text); take a screenshot only as evidence, once the page is ready (a retest subagent once overwrote and re-read the same screenshot 75 times).
+- Finish with the GOAL walk-through in K4 ("Goal check"): each GOAL line met / not met with evidence.
 - BE: a new test counts only after the K4 revert check — it FAILS with the fix removed and PASSES with it back. Output of both runs goes in the report (source: Simon Willison 2025-12-18; the owner's #1 pain "có fix đc đâu ???").
 - Content checks (text, value, element present, attribute, console error, network response) → read the DOM / console / network (`read_page`, `find`, `read_console_messages`, `read_network_requests`); cheaper and exact. Screenshots are for **visual** checks (layout, colour, position) and for the before/after images sent to the owner (source: Armin Ronacher on screenshot cost; keep browser checks — Boris Cherny "another 2-3x").
-- CSS/layout: render and screenshot at several widths; never reason about box-model in your head (source: "vẫn thế", "bn sửa thành cái gì đây").
+- CSS/layout: render and screenshot at several widths; never reason about box-model in your head (source: memory `feedback_verify_css_with_render`, "vẫn thế", "bn sửa thành cái gì đây").
 - FE: before-shot → live fix in browser → after-shot → only then code → final shot (source: 2026-09-28 note 3 wish #5, "cap 2 cái ảnh gửi lại cho tôi là hướng xử đó hợp lý").
 - BE: fail first, then pass; never weaken the test or hard-code to pass (source: 2026-09-28 note 3 wish #5, "viết test fail rồi chạy để nó pass ko hard code để qua test"; note 3 §2 #1 "1. check db 2. viết test fail 3. sửa qua pass").
 - Counts come from the run you just did, pasted (source: note 3 §1.3 #1, agent reported 104 passing, real 89).
-- Do not change mock/demo data to make a screenshot look right.
+- Do not change mock/demo data to make a screenshot look right (source: memory `feedback_real_fix_not_avoidance`).
 - Screens, logs, scripts only under `tmp/` (source: 2026-09-28 note 4 §5.4).
+- Before sending a screenshot, open it and check the element under test is fully visible and readable. Not covered by an overlay (assistant/chat bars, toasts, banners, chat bubbles) and not cut off at the edge. Covered → hide the overlay in the browser only (CSS `display:none` via eval on the top document), or scroll or resize, then re-shoot. Never send it as-is and quote the DOM text instead (source: owner 2026-10-05, the keep-tier line was half hidden under "Work with Sidekick": "chụp che mất đoạn quan trọng rồi").

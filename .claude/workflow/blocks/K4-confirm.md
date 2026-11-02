@@ -5,6 +5,9 @@
 ## Input
 K3 diff, the K2 before-evidence (same URL / state / widths, same test), `progress.md`.
 
+## Browser
+Every page is opened with the project's browser tool (profile §4) (`/ship-verify`): environment check → open the feature by name → shoot once the content settled. It knows the routes, waits for real content and recovers known stuck states. Do not improvise URLs or wait loops.
+
 ## FE
 1. Run the changed code where it can be seen:
    - local stack in this worktree (profile §5), or a staging environment after K7;
@@ -28,6 +31,11 @@ K3 diff, the K2 before-evidence (same URL / state / widths, same test), `progres
    Passes without the fix → the test does not catch the bug: report "test không bắt được lỗi", back to K2. `git apply` back fails → stop, report, the patch file holds the fix. Fix already committed → the same with `git diff HEAD~1 -- <files>`.
 3. Run the existing tests of the touched package/folder (not the whole monorepo) → no new failures vs `origin/master`.
 4. Check the diff did not touch the test's assertions (`git diff -- <test file>` shows only additions of the new case).
+5. `node .claude/scripts/diff-guard.mjs` (no argument, from this worktree) must exit 0: no main-branch line rewritten in a core file (`.claude/diff-guard.json`), no new `return undefined`, no removed test assertion. Exit 2 → back to K3 (or the owner's approval recorded in `decisions.md`). Paste its output.
+6. Impact map hard checks (profile §16, no argument, from this worktree): section 0 must say `none`. Exit code 2 → the change broke a Pub/Sub / Cloud Tasks / route edge: back to K3 before reporting. Paste section 0 in the report; name the section 1 flows you did not retest.
+
+## Goal check (feature or any task with `analysis.md`)
+After the per-item checks, walk every line of the GOAL (`analysis.md` §6) and each main flow of `plan.html` §4 on the real app (browser tool, profile §4). Per line: **met / not met** + image or output. A change whose items pass but misses a GOAL line is reported "not proven" for that line (owner, note 11: "còn khá nhiều bug và không đúng ý mình").
 
 ## Report rules
 - Numbers come from the command output you just ran, pasted — never from memory or the implementer's claim (an agent once reported 104 passing tests; the run had 89).
@@ -43,4 +51,5 @@ Before/after image pair (FE) or fail→pass output (BE) + the revert-check outpu
 - Missing image → say which and why in one line, e.g. "Không có ảnh before: thay đổi chỉ là số request, bằng chứng thay thế = đếm log `firebase-debug.log` 7 → 1 request."
 
 ## Stop when
+First, if this verify started the dev stack: `release` it (profile §5) before reporting.
 Confirmed → parent reports the item and asks for commit (K6). Still broken → back to K3 once with the new evidence; broken again → parent stops and asks the owner with both attempts.

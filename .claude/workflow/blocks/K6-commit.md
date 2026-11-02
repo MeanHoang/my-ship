@@ -1,23 +1,19 @@
-# K6 — Commit (strict consent)
+# K6 — Commit (automatic, never push)
 
 **Role:** parent only. Subagents never commit.
 
+**Owner decision 2026-11-02:** "cho auto commit nhé ko push thôi". Commits no longer wait for the word "commit"; push, MR, deploy still do (K7).
+
 ## Input
-A confirmed item (K4 evidence) or accepted review fixes, and the owner's latest message.
+A confirmed item (K4 evidence) or accepted review fixes.
 
-## Consent
-- Commit only when the owner's **latest message** says "commit" (or "ok commit") for **this** item. Look for the word each time; do not infer it from context or from an earlier approval.
-- "sửa nhé", "fix nhé", "tiếp", "ừ" ≠ commit. Ambiguous → ONE question: *"OK này là commit <item> luôn đúng không?"*
-- Consent never carries over: next bug / next phase / late fix → new consent. (2026-08-05 after two approved commits the third was chained on "sửa nhé" and had to be questioned.)
-- A `--note` like "cứ commit luôn" is not consent for an unreported item.
-- The item report ends with one line asking for it, e.g. *"Nói 'commit' để em commit bug #3."*
-
-## Exception — `/ship-auto` (owner approved at Gate 2, 2026-09-29)
-While `auto: on` in the `progress.md` state block, the parent commits **without asking**, because the owner is away and per-item commits are what make each choice revertable:
-- One commit per phase (feature) or per bug, only after its K4 evidence exists.
-- One **separate** commit per auto decision, message tagged `[D-auto-<N>]` (see `.claude/workflow/auto-decide.md`); write the sha back into its `decisions.md` entry.
-- Everything under "How" below still applies (explicit paths, English, no amend, no `--no-verify`). **Never push** — push stays K7 on his instruction.
-- `auto: off` / `done` → strict consent again.
+## When to commit (no asking)
+- **Tester bug / production-bug fix / `/ship-fix`:** right after that item's evidence exists (K4: after-image, or fail→pass + revert check) and its cheap checks pass (unit tests + eslint of its files + `node .claude/scripts/diff-guard.mjs` exit 0).
+- **`/ship` feature (batch flow, owner 2026-10-29):** all phases coded → the ONE K5 review has no must-fix left → one commit per phase. Split the tree by phase: stage explicit paths; a file shared by several phases is split by hunk (`git diff <file>` → filtered patch → `git apply --cached`), each commit names its phase. Then ONE K4 verify over all phases; its fixes get their own commits.
+- **`/ship-auto`:** same as `/ship`, plus one **separate** commit per auto decision tagged `[D-auto-<N>]` (`.claude/workflow/auto-decide.md`); write the sha into its `decisions.md` entry.
+- No evidence yet, or a check failed → do not commit; report the item as not done.
+- The item report says what was committed (sha + one line), not a question.
+- **Never push, open an MR, or deploy** without his instruction (K7). "commit" from him is no longer needed; "push" still is.
 
 ## Granularity
 | Flow | One commit per |
@@ -25,7 +21,7 @@ While `auto: on` in the `progress.md` state block, the parent commits **without 
 | Tester bugs (STABILIZE) | bug |
 | Feature (SHIP) | phase |
 | Single bug (project bug skill) | the fix |
-| K5 findings | fix round the owner accepted |
+| K5 findings | fix round |
 
 ## How
 0. Hook `ship-scope-guard.sh` denies a commit containing a file not named in `progress.md` (phase checklist, bug `Files:` line, or "Việc phát sinh ngoài plan"). Out-of-plan but needed → one line in "Việc phát sinh ngoài plan" with the reason, and name it in the report to the owner. Not needed → unstage and drop it.
@@ -33,8 +29,9 @@ While `auto: on` in the `progress.md` state block, the parent commits **without 
 2. Never stage: `.claude/ship/**`, docs/tracking files, format-only hunks outside the change, plus the project's list (profile §9).
 3. Message in **English**, repo convention (`fix:` / `feat:` / `refactor:` — check `git log`), plus the attribution trailer from the session instructions. Exception: a `[deploy-only]` commit carries no body except the `--only` argument (see `deploy-staging`).
 4. Never amend, never `--no-verify`, never push (push = K7 on a separate instruction).
+5. Never stage secrets or local run files (`.env*`, `serviceAccount*.json`, profile §9 list).
 
-## Before the consent line
+## Before reporting the commit
 Did the owner correct the work on this item ("sao lại…", "không phải…", a rejected fix)? If yes, draft ONE Standards line + target role and put it in the same report: *"Thêm vào Standards của `<role>`: '<line>'?"* (roles/README.md flow). Nothing to add → say nothing.
 
 ## After
@@ -43,4 +40,4 @@ Did the owner correct the work on this item ("sao lại…", "không phải…",
 - Delete that item's `tmp/shots/` (the images were already sent in chat).
 
 ## Stop when
-Committed → next item. No consent → park (edit NOW, fill "Waiting on user") and end the turn.
+Committed → next item.

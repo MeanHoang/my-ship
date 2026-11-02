@@ -12,8 +12,9 @@ Read first: `.claude/workflow/ship-core.md`, `.claude/ship-profile.md`.
 | 1 | Read the bug list (by number) | — | parent | — |
 | 2 | Per bug: real settings on the test target + code + **attribution** (`git log -S` → commit, author, date) | K1 | scout; bugs on different surfaces → scouts in parallel | from base / another dev → report, do not fix |
 | 3 | Per bug, **sequential**: reproduce → fix → confirm | K2 → K3 → K4 | verifier → implementer → verifier | FE live-fix approval; real trade-offs only |
-| 4 | Per bug: commit | K6 | parent | 🚦 "commit" — **one commit per bug** |
+| 4 | Per bug: commit | K6 | parent | automatic — **one commit per bug** |
 | 5 | End of batch: review once | K5 | reviewer | findings → own fix commits |
 | 6 | Push / deploy / retest | K7 | parent + verifier | only when told |
+| 7 | Report back to the tester where they wrote the bugs: per line plain explanation + screenshot, tick, one comment tagging them (`.claude/workflow/tester-report.md`) | K7 | parent (+ verifier for shots) | only after the owner says it is on the test env |
 
 `progress.md` (`mode: STABILIZE`) projects the bug list: one `###` per bug with a `Files:` line (filled after K1) and rows attribution → reproduce → fix → confirm → commit, plus one K5 row. A bug reported mid-batch → new `###` at the end of the queue, same loop. Scope: only reported bugs, no refactors.

@@ -9,7 +9,8 @@
 # hoặc tên file) — trong checklist phase/bug, hoặc trong "Việc phát sinh ngoài plan".
 # Ngoài plan mà thật sự cần → ghi 1 dòng vào "Việc phát sinh ngoài plan" kèm lý do
 # (và decisions.md nếu là quyết định), rồi commit lại. Muốn gỡ → git restore --staged.
-# Luôn cho qua: test/fixture mới, file dịch (locale), file CI (.gitlab-ci.yml / .github/workflows).
+# Luôn cho qua: test/fixture mới, file dịch (locale), file CI (.gitlab-ci.yml / .github/workflows),
+# và commit merge (đang có MERGE_HEAD) — file từ master không phải sửa lan (owner 2026-10-26).
 #
 # Chỉ chạy khi branch có progress.md. Luôn exit 0; chặn bằng permissionDecision deny.
 
@@ -43,6 +44,9 @@ def git(*a):
 
 
 root = git("rev-parse", "--show-toplevel").strip()
+# A merge commit (e.g. master -> task branch) carries upstream files by design: not over-editing.
+if git("rev-parse", "-q", "--verify", "MERGE_HEAD").strip():
+    sys.exit(0)
 branch = git("rev-parse", "--abbrev-ref", "HEAD").strip()
 ship = os.path.join(root, ".claude", "ship") if root else ""
 if not branch or not os.path.isdir(ship):

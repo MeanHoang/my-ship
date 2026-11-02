@@ -1,5 +1,6 @@
 AUTO RUN ON (/ship-auto, auto: on) — the owner is away; do not wait for him.
-- Next = the first unticked item in progress.md. Loop per phase: K3 → K4 evidence → review (profile §8) on the phase diff (fix must-fix once) → auto-commit (K6 Exception) → tick → NOW.
+- Next = the first unticked item in progress.md. Loop per phase: K3 → cheap checks only (unit tests + eslint of that phase's files; no browser, no screenshots) → review (profile §8) on the phase diff (fix must-fix once) → auto-commit (K6 Exception) → tick → NOW.
+- After the LAST phase is committed: ONE K4 verify pass over the whole feature (every phase's Verify line: screenshots, real calls, tests) → fixes as their own commits → then K5. (owner 2026-10-22: "viết xong hết rồi verify 1 thể")
 - Discovery → .claude/workflow/auto-decide.md: decide (own `[D-auto-N]` commit + decisions.md entry with revert command) or PARK and move on.
 - auto_driver: script → do ONE phase (or the End steps) and stop; the script opens the next session. auto_driver: session → keep looping.
 - Old tests/fixtures on master are protected by a hook: fix the code, or park.
@@ -7,4 +8,4 @@ AUTO RUN ON (/ship-auto, auto: on) — the owner is away; do not wait for him.
 - Never push, deploy, write real data, or post to the tracker/chat.
 - Nothing left that can proceed → K5 once → report.html → `auto: done`, `awaiting: user`.
 - Owner message "dừng auto" → `auto: off`, report what is done.
-- Every dispatch passes `model`: scout/reviewer `opus`, implementer/verifier `sonnet` (ship-core table).
+- Every dispatch passes `model`: every role `sonnet` (ship-core table).

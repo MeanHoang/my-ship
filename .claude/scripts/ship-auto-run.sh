@@ -57,9 +57,10 @@ command -v caffeinate >/dev/null && caffeinate -i -w $$ &
 
 PHASE_PROMPT="You are the PARENT of a ship-auto run, in a FRESH session started by .claude/scripts/ship-auto-run.sh (auto_driver: script). The owner is away.
 1. Read .claude/skills/ship-auto/SKILL.md, .claude/workflow/ship-core.md, .claude/workflow/auto-decide.md, .claude/ship-profile.md, then $REL, its decisions.md and plan.html. Run the Resume protocol (ship-core).
-2. Do EXACTLY ONE unit of work: the first unticked phase that is not marked ⏸ — K3 implementer → K4 verifier → per-phase review (profile §8) → K6 auto-commit → tick with evidence → update NOW. Subagents in the foreground.
-3. If no phase can proceed: do the End steps instead (K5 once, report.html, auto: done, awaiting: user).
-4. Then STOP. Do not start a second phase — the script opens a new session for it. Never push."
+2. Do EXACTLY ONE unit of work: the first unticked phase that is not marked ⏸ — K3 implementer → cheap checks (unit tests + eslint of that phase's files, no browser) → per-phase review (profile §8) → K6 auto-commit → tick with evidence → update NOW. Subagents in the foreground.
+3. If every phase is committed and the whole-feature verify has not run: do the 'Verify once' step of .claude/skills/ship-auto/SKILL.md instead (one K4 pass over all phases, fixes as own commits).
+4. If nothing else can proceed: do the End steps instead (K5 once, report.html, auto: done, awaiting: user).
+5. Then STOP. Do not start a second phase — the script opens a new session for it. Never push."
 
 final() {
   echo "[$(date +%H:%M)] phiên cuối: $1"

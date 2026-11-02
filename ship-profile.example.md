@@ -17,7 +17,7 @@ Priority-ordered sources the agent may READ (admin UI, read-only API/MCP, DB rea
 
 ## §4 Test targets and browser
 - Which environments/accounts the agent may use for testing and how to pick one (not deployed → local; deployed → the staging that runs this branch; …). State the target before the first screenshot.
-- Browser tool (e.g. Claude in Chrome) and fallback.
+- Browser tool (e.g. Claude in Chrome) and fallback, and the `/ship-verify` browser script if you have one (commands `doctor` / `open <feature>` / `ready` / `shot` / `console` / `measure`) plus its `feature-map.json` (feature names → route, clicks, ready text, traps).
 - How test setup is allowed to happen (UI only? seed scripts?) and what is forbidden (writing production data).
 - Typical viewport widths.
 - Optional: a browser-only override recipe (intercept `fetch`, inject CSS) for reproducing with real data.
@@ -67,3 +67,9 @@ Edge inputs every plan must test in this repo (existing users without the new fi
 
 ## §14 Design system for mockups (product role, P2)
 Which look the product role's HTML mockups should copy: component library / design tokens, the skill or doc that describes them, reference screens, target widths. New app with none yet → "clean neutral".
+
+## §18 Diff guard (`.claude/scripts/diff-guard.mjs`, config `.claude/diff-guard.json`)
+- `mainBranch`, and `coreFiles`: the shared formula files whose existing lines must never be rewritten (new logic goes in its own file behind a guard).
+- Optional: `codePath` (regex of production code), `routesPath` (regex of route files) and `featureMap` (path) for the route check.
+- Add a check to the script only from a review comment you have made at least twice.
+

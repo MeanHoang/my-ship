@@ -58,6 +58,32 @@ for slug in sorted(os.listdir(ship)):
     if m and m.group(1).strip() == branch:
         target = p
         break
+
+# Không khớp branch → tìm hồ sơ ghi lệch tên (vd `branch: feature-x` thay vì `feature/x`,
+# tức là ghi tên thư mục worktree). Lệch tên thì hook này và web AI Office đều bỏ qua
+# hồ sơ trong im lặng (sự cố 2026-10-12, in-app-ui-figma-redesign). Đúng 1 hồ sơ gần
+# đúng → tự sửa dòng `branch:`; nhiều hơn → chỉ báo.
+if not target and branch not in ("master", "main", "HEAD"):
+    near_names = {branch.replace("/", "-"), os.path.basename(root)}
+    near = []
+    for slug in sorted(os.listdir(ship)):
+        p = os.path.join(ship, slug, "progress.md")
+        if not os.path.isfile(p):
+            continue
+        head_txt = open(p, encoding="utf-8", errors="replace").read(1200)
+        b = re.search(r"^\s*branch:\s*(.+?)\s*$", head_txt, re.M)
+        w = re.search(r"^\s*worktree:\s*(.+?)\s*$", head_txt, re.M)
+        if (b and b.group(1).strip() in near_names) or (w and w.group(1).strip() == root):
+            near.append(p)
+    if len(near) == 1:
+        fixed_txt = open(near[0], encoding="utf-8", errors="replace").read()
+        fixed_txt = re.sub(r"^(\s*branch:).*$", rf"\1 {branch}", fixed_txt, count=1, flags=re.M)
+        with open(near[0], "w", encoding="utf-8") as fh:
+            fh.write(fixed_txt)
+        target = near[0]
+        print(json.dumps({"systemMessage": f"ship-state-sync: sửa `branch:` trong {os.path.relpath(near[0], root)} thành `{branch}` (trước đó lệch tên nhánh git)."}))
+    elif len(near) > 1:
+        print(json.dumps({"systemMessage": f"ship-state-sync: nhánh `{branch}` không khớp progress.md nào; có {len(near)} hồ sơ gần đúng, sửa tay dòng `branch:`: " + ", ".join(os.path.relpath(p, root) for p in near)}))
 if not target:
     sys.exit(0)
 

@@ -17,6 +17,7 @@ Why: real codebases have hidden couplings; a fix guessed from reading code alone
 - A behaviour that only appears on failure (e.g. an error toast when an external API fails) → the plan must say how K4 will force that failure (override the response, stub the service); "only a unit test covers it" is stated, not hidden.
 
 ## BE — make the failing test pass
+- Feature phase: the failing tests are the phase's `ACC:` lines from `progress.md` (Gate 2 · 2c+). Write them first, paste the FAIL, then code.
 - Code until the K2 test passes. **Never** edit, skip, loosen or delete the test to get green; never hard-code the test's input/expected value in production code. Test genuinely wrong → stop and tell the parent why.
 
 ## Every implementer dispatch carries

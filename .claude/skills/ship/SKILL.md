@@ -21,25 +21,33 @@ K0, then route per ship-core "Which skill". Existing branch/progress → `mode: 
 | 3 | Understand (business) | 1b–1d | parent | 🚦 **Gate 1** (one question per turn) |
 | 4 | Gather facts | 2a | one scout for all surfaces by default | — |
 | 5 | Decide trade-offs, split phases, render plan | 2b, 2c, 2d | parent (2d: subagent) | 🚦 **Gate 2** |
-| 6 | Per phase: code → confirm | K3 → K4 | implementer → verifier; phases with disjoint files may run in parallel | discoveries only |
-| 7 | Per phase: commit | K6 | parent | 🚦 "commit" |
-| 8 | After all phases: review once | K5 | reviewer | findings → own fix commits |
+| 6 | Code ALL phases in one go | K3 | implementers (split by layer/disjoint files, may run in parallel) | discoveries only |
+| 7 | Review once over all phases | K5 | reviewer | must-fix → fixed before commit |
+| 8 | Commit one per phase — no ask once the review passes (owner 2026-10-29) | K6 | parent | — |
+| 8b | Verify once over all phases | K4 | verifier | findings → own fix commits |
 | 9 | Push / deploy / retest | K7 | parent + verifier | only when told |
 
 ### Gate 1 — Understand
 The project's spec tool (profile §1): 1a verify (scout, `file:line`, real numbers — a query that can settle a point settles it here), then block P (P1 current state + research → P2 proposal + mockup → P3 compare with the spec; the parent gives the product role only the goal, never the spec's solution, until P3) — the owner decides on the verdict, mockup and differences before any plan, 1b write `analysis.md` (§1 domain · §2 who hurts, how many · §3 what the app does today · §4 gap · §5 open-points ledger · §6 GOAL empty), 1c grill **one question per turn** — only what he can answer without reading code, 1d fill §6 GOAL with him and copy it into `decisions.md`. No plan here. Ends on his explicit move ("ok", "bước 2", "tiếp" — proceed, not commit).
 
 ### Gate 2 — Plan (all verification and all open questions end here)
-- **2a Gather (read-only)** — ONE scout covering every touched surface + backend path by default (parallel scouts each re-read the same shared code — HN: *"launched 7 sub agents which burned through my budget"*); split only for surfaces that share no code. Each confirms/refutes the spec with `file:line` and, per surface, checks: field-trigger loops, the settings chain (profile §2), whether the surface is live, existing users without the new data, database indexes. Output `facts.md`: `claim | verdict | file:line`.
+- **2a Gather (read-only)** — ONE scout covering every touched surface + backend path by default (parallel scouts each re-read the same shared code — HN: *"launched 7 sub agents which burned through my budget"*); split only for surfaces that share no code. Each confirms/refutes the spec with `file:line` and, per surface, checks: field-trigger loops, the settings chain (profile §2), whether the surface is live, existing users without the new data, database indexes. Backend path → first run the impact map (profile §16) on the functions / `type`s the spec touches; its entry points (section 1) and other readers of written collections (section 3) seed plan §3b "who else uses it" and the 2b sweep — each one is still confirmed by reading the code. Output `facts.md`: `claim | verdict | file:line`.
 - **2b Decide 🚦** — load only spec + `analysis.md` + `facts.md`. Facts kill questions first. Ledger = `analysis.md` §5, posted each round. One question at a time, blockers first, grill-me shape. A trade-off that changes what users see, scope, or cost to users → product Decide card (block P) in the question. **2b may not end while any §5 row is open**; before asking whether it is settled post *"Chưa đụng tới: … · Không verify được: … · Giả định còn lại: …"* — sweep other surfaces (profile §2), live users, rollback, data written before the change, other readers of changed fields. Settled decisions (why + rejected option) → `decisions.md`.
 - **2c Split 🚦** — small phases by flow/surface, each separately reviewable; inner order config UI → backend → end-user surface. You propose the grouping; **he settles the order** (*"Phase nào anh muốn thấy chạy trước?"* · *"Cái nào rơi khỏi v1?"*). 5–10 lines per phase in chat (changes, files, Pattern line, verify line).
+- **2c+ Acceptance list 🚦 (with the split)** — turn every GOAL line (`analysis.md` §6) and every Review Focus edge input into ONE concrete check, in the phase that owns it:
+  - BE: a test file + test name + the exact input and expected value (e.g. "refund 1 of 2 items, 100 pts earned → revoke 50"). It is written FIRST in that phase and must FAIL on the current code.
+  - FE: open the feature with the project's browser tool (profile §4) + what must be visible (text / value / state), at which width.
+  He approves this list together with the phases; it is what "done" means. Code is judged against it, not against how the code reads (owner 2026-11-02: "ko cần code nhiều mà cần code đúng").
 - **2d Render (subagent)** — copy `templates/plan-doc.html`, fill placeholders, never edit its `<style>`. Sections: 1 overview + goal · 2 current state · 3 trade-offs · 3b modules touched (incl. **who else uses it**) · 4 phases (Pattern line + fix + verify) · 5 risks · 6 open points · 7 out of scope · **Review Focus**: the edge inputs no phase test covers yet (defaults: profile §12), each with the test that pins it in the phase that owns the code. `open` it + 3–5 line gist. Decision changes go back to 2b.
-- After his "move": **generate `progress.md` from `plan.html` §4** — each phase `### ⬜ Phase N — name`, its Pattern line, one `- [ ]` per `<li>` naming its file, its Verify line, plus the template's fixed rows. "move auto" → `/ship-auto`.
+- After his "move": **generate `progress.md` from `plan.html` §4** — each phase `### ⬜ Phase N — name`, its Pattern line, its **Acceptance** lines (from 2c+, one `- [ ] ACC:` each), one `- [ ]` per `<li>` naming its file, its Verify line, plus the template's fixed rows. "move auto" → `/ship-auto`.
+
+### Batch flow (owner 2026-10-29: "code 1 lượt rồi review xong hết các phase mới verify 1 thể" · "commit từng phase … qua review là commit luôn")
+Code every phase first (K3), then ONE K5 review over the whole diff, fix its must-fix items, then commit **one commit per phase without asking** (K6 standing consent for /ship), then ONE K4 verify (tests + screenshots) over all phases; verify findings get their own fix commits. The per-phase steps below still describe what each phase's code must satisfy; their per-phase confirm/commit gates are replaced by this batch flow. FE live-try (K3) still happens before code when the phase changes what users see.
 
 ### Per phase
 1. Light touchpoint re-check (only files an earlier phase changed). No new fan-out.
 2. **K3** — pattern-reference gate (no reference `file:line` = no new code), layer rules, translations in the same phase, no pass-through wrappers.
 3. **K4** — screenshots / tests + revert check.
-4. Report: what changed, files, pattern line, lint, before/after images or fail→pass output, what to look at. End with the K6 consent line (+ a Standards line if he corrected this phase). Phase heading 👀, NOW → "chờ commit phase N".
-5. **K6** on his "commit" → heading ✅, NOW → next phase.
+4. Report: what changed, files, pattern line, lint, before/after images or fail→pass output, what to look at. End with the K6 commit sha (+ a Standards line if he corrected this phase). Phase heading 👀, NOW → "chờ commit phase N".
+5. **K6** after the single K5 review passes → commit (no ask), heading ✅, NOW → next phase.
 No per-phase review — K5 once, after the last phase.

@@ -21,5 +21,9 @@ Committed branch, the owner's instruction naming what to do (push / PR-MR / depl
 2. Failure → report the failing job + log tail. Stop.
 3. Success → verifier retests exactly the fixed items on that environment (targets: profile §4), one screenshot per item → `tmp/shots/`, sent as images.
 
+## Report to the tester — when the bugs came from a tester/QA
+After the retest above, and only once the owner asked for it this round: follow `.claude/workflow/tester-report.md`
+(per bug: plain explanation + screenshot under the tester's line, tick, one comment tagging the tester; dry run first, read back after).
+
 ## Stop when
 The requested step is done and reported with links/images. Never chain push → deploy → retest without each being asked.

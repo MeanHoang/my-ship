@@ -21,7 +21,7 @@ for s in "$KIT"/.claude/skills/ship*; do rm -rf "$PRJ/.claude/skills/$(basename 
 rm -rf "$PRJ/.claude/workflow"; cp -R "$KIT/.claude/workflow" "$PRJ/.claude/"
 mkdir -p "$PRJ/.claude/roles"; cp "$KIT"/.claude/roles/*.md "$PRJ/.claude/roles/"
 cp "$KIT"/.claude/hooks/*.sh "$PRJ/.claude/hooks/"
-cp "$KIT"/.claude/scripts/*.sh "$PRJ/.claude/scripts/"
+cp "$KIT"/.claude/scripts/*.sh "$KIT"/.claude/scripts/*.mjs "$PRJ/.claude/scripts/"
 chmod +x "$PRJ"/.claude/hooks/*.sh "$PRJ"/.claude/scripts/*.sh
 echo "✓ kit copied"
 
@@ -72,7 +72,7 @@ for e in .claude/ship/ .claude/ship-profile.md .claude/settings.local.json .clau
          .claude/skills/ship-verify .claude/skills/ship-review .claude/skills/ship-board \
          .claude/hooks/ship-mode-card.sh .claude/hooks/ship-auto-continue.sh .claude/hooks/ship-auto-guard.sh \
          .claude/hooks/ship-scope-guard.sh .claude/hooks/ship-state-sync.sh .claude/hooks/ship-context-restore.sh \
-         .claude/hooks/branch-guard.sh .claude/scripts/ship-auto-run.sh .claude/scripts/ship-board.sh .claude/scripts/ship-export.sh; do
+         .claude/hooks/branch-guard.sh .claude/scripts/ship-auto-run.sh .claude/scripts/ship-board.sh .claude/scripts/ship-export.sh .claude/scripts/diff-guard.mjs .claude/diff-guard.json; do
   grep -qxF "$e" "$EX" || echo "$e" >> "$EX"
 done
 echo "✓ kit + task state hidden from git (.git/info/exclude). Want to commit it for your team instead? Remove those lines."
