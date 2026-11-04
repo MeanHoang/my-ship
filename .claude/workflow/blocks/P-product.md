@@ -26,14 +26,16 @@
    - What happens if we do nothing?
 
 ### P2 · Product proposal + mockup
-- **Base = the real current UI**, not Figma: start from a screenshot of today's widget / admin page on the test store (the project's browser tool (profile §4)), and show the design only as the change on top of it. Preview inside the real editor when one exists; no standalone set of pages. Anything the design does not show is labelled "chưa thiết kế", never invented (owner 2026-10-26 "dừng dựa theo ảnh figma lấy ảnh àny cho sát hiện tại", "dựng editor thôi … cần gì dựng nhiều"; 2026-10-27 "designer đâu có vẽ perk mặt sau").
+- **Base = the real current UI**, not Figma: start from a screenshot of today's widget / admin page on the test store (browser tool, profile §4), and show the design only as the change on top of it. Preview inside the real editor when one exists; no standalone set of pages. Anything the design does not show is labelled "chưa thiết kế", never invented (owner 2026-10-26 "dừng dựa theo ảnh figma lấy ảnh àny cho sát hiện tại", "dựng editor thôi … cần gì dựng nhiều"; 2026-10-27 "designer đâu có vẽ perk mặt sau").
 1. Options (≥3 incl. the smallest and "do nothing") → recommended v1: appetite, solution, rabbit holes, **no-gos**.
-2. **Mockup — 2 to 4 key screens as local HTML** in the project's real look (profile §14; none → clean neutral), realistic content, the main flow linked between screens.
-   - What to draw: the recommended v1. If the verdict is need-data / Kill, draw the **smallest product option** anyway — it becomes the prop for interviews / the landing-page image.
-   - Files: `.claude/ship/<slug>/tmp/mockups/` (`/ship-new` creates the slug in K0): `v1-<n>-<screen>.html`, one shared `style.css`, and an `index.html` showing all screens side by side.
-   - Widths: profile §14; none → phone 390px (+ desktop 1280px if it is a web app).
-   - Numbers and names on screens are illustrative: say so on `index.html` and in `product.md` §10 — never reused as evidence.
-   - Render with headless Chrome + screenshot (`index.png`), read it, fix what looks broken, re-shoot. The role never runs `open`; it returns the paths. **The parent opens `index.html` for the owner.**
+2. **Mockup = the REAL current UI with the change applied** (owner 2026-11-03: "mockup phải dựa theo ui thật hiện tại"; 2026-11-02 wishlist task: a hand-drawn HTML mockup missed the header, product images, variant lines, Sold out and the real fonts → "mockup này ko sát thực tế", one extra hour to redo it on the real widget).
+   - **Never redraw a surface that already exists** (widget, popup, loyalty page, admin page) as standalone HTML. Start from it on a granted test store (profile §4).
+   - **Storefront / widget:** write the change as a patch, `.claude/ship/<slug>/tmp/mockups/<name>.css` (+ `<name>.js` only for markup the CSS cannot make), inject it into the live page with the browser tool and shoot before/after from the same page. Sample content (long names…) goes in before both shots, and those files are marked `-override`.
+   - **Admin (cross-origin iframe, no injection):** screenshot the real page (a screenshot from the browser tool) as the base and overlay ONLY the new control in the design system's look (profile §14), labelled "dựng thêm"; everything else is the real pixels.
+   - **A screen that does not exist yet** (new page/popup): only then local HTML, built from the nearest real screen's components and labelled "chưa có UI thật".
+   - Widths: the browser's real viewport, reported as is. Never fake a phone by squeezing a panel with CSS; if the phone layout matters and no real phone viewport is available, say "chưa chụp mobile thật".
+   - What to draw: the recommended v1 (need-data / Kill → the smallest option). One page `tmp/mockups/index.html` shows the before/after pairs with one-line captions (what changed, sample data yes/no, width).
+   - Reopen every image before sending (designer Standards). Then ask ONE question with one recommendation; do not run several A/B rounds on the same mockup.
 3. Verdict **Build / Reframe / Kill / need-data** + confidence:
    - **Build** — a specific problem with ≥1 behaviour/commitment signal, an identifiable user who wants it a lot, no untested High value-risk, appetite + no-gos written, confidence ≥80%.
    - **Reframe** — the problem is real but the literal ask / scope / cost is wrong → restate problem + smaller option.

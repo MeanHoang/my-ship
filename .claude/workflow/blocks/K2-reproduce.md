@@ -7,6 +7,8 @@
 ## Input
 K1 evidence (legs, settings + source, flow `file:line`), the test target/URL, `progress.md`.
 
+**Before evidence comes before any fix code** (K3 does not start without `tmp/shots/<bug>-1-before.png` or `tmp/logs/<bug>-fail.txt`). Local cannot show it → reproduce NOW where the bug lives (the tester's store / staging) while it still runs the old build, i.e. before the fix's `MERGE-DEPLOY`. Truly impossible (needs a prod-only state) → write in `progress.md` at K2 time "không có ảnh trước: <why>, bằng chứng thay thế: <failing test>", not at the end (2026-11-04: the bug was only reproduced after the fix was deployed, so "before" was a unit test only).
+
 ## FE bug (UI)
 1. Browser (profile §4) → the exact page/state from the report (same account, user state, viewport).
 2. Screenshot the bug → `tmp/shots/<bug>-1-before.png`. Several widths when layout is involved (typical widths: profile §4).
@@ -20,7 +22,7 @@ K1 evidence (legs, settings + source, flow `file:line`), the test target/URL, `p
 2. Run it and keep the raw failing output (`tmp/logs/<bug>-fail.txt`). A test that passes before the fix does not reproduce the bug — rewrite it.
 
 ## Browser override
-If the profile defines one (profile §4): browser-only, never writes data, never clicks save/submit. Screenshots taken under an override carry `-override` in the filename.
+For PRODUCTION data shown in the browser (profile §4): browser-only, never writes data, never clicks save/submit. This is not about test stores: on local / staging the verifier builds any setup it needs, saves included (`roles/verifier.md` "Setup is your job"). Screenshots taken under an override carry `-override` in the filename.
 
 ## Output
 Before-screenshot(s) + the evidence of cause (FE), or the failing test + raw output (BE). Paths under `tmp/`.

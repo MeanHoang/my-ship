@@ -2,7 +2,7 @@
 
 Read by `/ship`, `/ship-auto`, `/ship-bugs`, `/ship-fix`, `/ship-verify`, `/ship-review`. Project-specific facts live in `.claude/ship-profile.md` (**profile §N**).
 
-**Pieces:** blocks `.claude/workflow/blocks/K0…K7` + `P-product.md` (what each step does) · roles `.claude/roles/*.md` + profile §11 (who does it — give every subagent the file paths and have it read them first; never paste their text: pasting doubles the parent's context and goes stale, note 7 #2) · `.claude/workflow/grill-me.md` (when and how to ask) · `.claude/workflow/auto-decide.md` (deciding alone, auto only) · templates `.claude/skills/ship/templates/`.
+**Pieces:** blocks `.claude/workflow/blocks/K0…K7` + `P-product.md` (what each step does) · roles `.claude/roles/*.md` + profile §11 (who does it — give every subagent the file paths and have it read them first; never paste their text: pasting doubles the parent's context and goes stale, the owner's notes #2) · `.claude/workflow/grill-me.md` (when and how to ask) · `.claude/workflow/auto-decide.md` (deciding alone, auto only) · templates `.claude/skills/ship/templates/`.
 
 ## Which skill (Step 0 of every flow)
 Run **K0**, read the state (`/branch-focus`, the task source's status + latest comments, existing `.claude/ship/<slug>/progress.md`), then say which flow and why in one line (he can overrule):
@@ -23,12 +23,17 @@ Ambiguous → ask. Hidden complexity found later **upgrades** the flow (fix → 
 The owner drives only the GATES; everything between runs on its own. Post the gate report in chat, end the turn, wait. Never advance on silence, never guess his answer. On a long wait, **edit** (not add) the single `> **NOW:**` line in `progress.md`, fill "Waiting on user" with the exact question, park.
 
 ## `--note` contract (every skill that takes one)
-- **Steers attention, never authority.** It opens no gate: questions and FE live-fix approval still need him; push still needs his instruction.
+- **Steers attention, never authority.** It opens no gate: questions and FE live-fix approval still need him; new MR / deploy still need his instruction.
 - **Persist it verbatim** as `note:` in the `<!-- state -->` block. **Answer it at the next gate** in one line.
 - **A note can be wrong.** Evidence says X is not the place → report it with `file:line`; do not follow it into the wrong file.
 
 ## Who runs what
 Parent = this session: orchestrates, verifies, asks, commits (`roles/parent.md`). Everything that reads, codes, screenshots or reviews is a **subagent** with its role file + profile §11 + its block; pass `model` explicitly (profile §7). Parent keeps conclusions; subagents swallow raw material. Parallel inside the task = subagents, never extra sessions. Single known file / one grep → inline, no dispatch.
+**Every dispatch brief also carries** (2026-11-04 lessons):
+- Tests: the runner table profile §4 (which runner owns which test file; jest vs vitest picked wrong = 39 min hung at 0% CPU). Run tests in the foreground with the Bash tool's `timeout` (≤ 600000 ms), never `run_in_background`, never watch mode (jest `--watchAll=false`, vitest `run`). A command that hits the timeout is reported with its last output, not retried blindly.
+- Report: the full report goes to `.claude/ship/<slug>/tmp/logs/<role>-<item>.md`; the final message is ≤ 20 lines (verdict, counts, the file path). Long final messages were cut off three times.
+- Git: never `git checkout -- / <ref> -- <path>`, `git restore` (except `--staged`), `git reset --hard`, `git stash`, `git clean` (hook `block-git-discard.sh` denies them for subagents too).
+
 **Model per role — always pass `model` on the dispatch** (an omitted model inherits the session's, usually the most expensive; owner decision 2026-09-29; every role on `sonnet` since 2026-09-30):
 | Role | `model` | Why |
 |---|---|---|
@@ -38,6 +43,7 @@ Parent = this session: orchestrates, verifies, asks, commits (`roles/parent.md`)
 | reviewer | `sonnet` | judgement; a weak review lets bugs through |
 | implementer | `sonnet` | follows a plan with a pattern reference; checked by verifier + reviewer. New implementer after two rejected fixes → a fresh `sonnet` with a rewritten brief |
 | verifier | `sonnet` | runs tests / drives the browser; evidence is machine-checked |
+| test-designer | `sonnet` | writes `test-cases.md` before the first verify, without the diff (`workflow/test-design.md`) |
 A project may override this table in profile §7.
 
 **The line:** reading and rendering run alone; every step that DECIDES (grill, trade-offs, phase order, verdicts, commits) stays with parent + owner — a subagent cannot talk to him.
@@ -60,7 +66,7 @@ Test: does it change what the code does (A), what we believed (B), or what we bu
 | `decisions.md` | append-only forever | decision + why + rejected option, lessons, tech debt |
 | `report.html` | end of `/ship-auto` | what was built + decisions to keep/reverse + parked items |
 | `tmp/{shots,mockups,logs}/` | disposable | every screenshot, mockup, log, repro output |
-Laws: `progress.md` is a projection of the plan (or bug list), not a journal — tick, don't narrate; exactly one NOW line; nothing derivable from git/tests; soft ceiling ~150 lines. Every file a commit may touch is named in it (the scope-guard hook checks). A lesson written twice leaves `decisions.md` → CLAUDE.local.md, a hook, or a test. After a commit delete that item's `tmp/shots/`.
+Laws: `progress.md` is a projection of the plan (or bug list), not a journal — tick, don't narrate; exactly one NOW line; nothing derivable from git/tests; soft ceiling ~150 lines. Every file a commit may touch is named in it (the scope-guard hook checks). A lesson written twice leaves `decisions.md` → the project's local rules, a hook, or a test. After a commit delete that item's `tmp/shots/`.
 
 ## Resume protocol
 1. `git status` + `git diff` first — the tree beats the doc. Never discard anything.
@@ -72,7 +78,7 @@ Laws: `progress.md` is a projection of the plan (or bug list), not a journal —
 ## Rules
 - A turn answering his pushback shows what was checked: re-read it, name the `file:line` and what you found (incl. "anh đúng" or "không verify được"). "đã sửa rồi anh" without an image or test output is the highest-risk sentence here.
 - The same fix rejected twice → stop, log what failed, new implementer (roles/parent.md).
-- Commit = automatic once the item has its evidence, one commit per item (K6, owner 2026-11-02); `/ship` and `/ship-auto` commit per phase after the single K5 review. Push / deploy / retest = separate explicit instruction (K7).
+- Commit = automatic once the item has its evidence, one commit per item (K6, owner 2026-11-02); `/ship` and `/ship-auto` commit per phase after the single K5 review. Push of the task branch follows each commit automatically (K6, owner 2026-11-03); new MR / deploy / retest = separate explicit instruction (K7).
 - Blocked or ambiguous → ask in grill-me shape; narrate while working; in chat name every decision in a few plain words — its D-number lives only in `decisions.md` (owner 2026-10-27 "đặt tên cho rõ ràng nhé"; checked by the work-brain Stop hook).
 - Bugs reported by a tester/QA (any `ship-*` flow, not only `/ship-bugs`) → once the owner says the fixes are on the test env: retest, then report back where the tester wrote them — per bug a plain-language explanation + screenshot, tick, one comment tagging the tester (`.claude/workflow/tester-report.md`; case study 2026-10-13).
 

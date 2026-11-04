@@ -12,6 +12,8 @@ The report (ticket / chat / spec / owner's words), the affected account or tenan
 | **2. Code** | The flow as numbered steps, each `file:line` | Infer from function names — open the file |
 | **3. Real settings / data** | The account's **actual** configuration | Assume defaults — most bugs live here |
 
+**Bug from a tester (QA):** leg 3 starts with *where the tester saw it*: environment, user, page, steps. Read it from the report first (task comment, the screenshot's URL bar, attached video). Still missing → ONE question to the owner in the task's first message, batched with any other (`progress.md` "Waiting on user"). Environment not in profile §4 → same question: test on the tester's environment, or rebuild the state on ours.
+
 ## Leg 2 reads the code the user actually runs
 - Production bug → read the base branch (profile §1), not a feature branch: `git show <base>:<path>` when this branch touches the area. If base and an unreleased branch differ in the buggy area, that diff is a finding (the fix may already exist unreleased → `skip (already fixed, pending release)`).
 - Tester (UAT) bug → read the task branch, and run **attribution** first: `git log -S` / `git blame` → introducing commit + author + date. From base or another dev → report it, do not fix (owner decides).

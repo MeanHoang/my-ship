@@ -23,7 +23,3 @@
 
 Every role file has exactly: Does / Does not / Input / Output / Stop when / Standards.
 
-## Lessons (full detail behind the Standards lines)
-`.claude/roles/lessons/<name>.md` holds the full lesson (why + how to apply + the incident) that a
-Standards line summarises — moved out of the owner's memory on 2026-09-28. A Standards line citing
-`feedback_<name>` means `lessons/<name>.md`; read it when the one-liner is not enough.

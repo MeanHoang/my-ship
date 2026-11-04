@@ -3,7 +3,7 @@
 #
 # 1. KHÔNG SỬA TEST CHO QUA. Chạy đêm không ai nhìn: test fail lúc 2h sáng, AI đổi
 #    `toBe(50)` thành `toBe(45)` là phase "xanh", report báo xong, bug vẫn còn.
-#    Luật trong roles/implementer.md là luật mềm → hạ xuống hook (note 5, 29/09).
+#    Luật trong roles/implementer.md là luật mềm → hạ xuống hook (the owner's notes, 29/09).
 #    Chỉ bảo vệ thứ ĐÃ CÓ TRÊN nhánh gốc (base_ref) — test do chính branch này viết thì AI sửa tự do.
 #      - file test (__tests__/, .test., .spec., tests/, test/, e2e/): chặn xoá/sửa dòng assert có trên master
 #      - fixture tests/fixtures/*: chặn sửa/xoá file có trên master (đó là output mong đợi)
@@ -41,17 +41,17 @@ def git(*a):
 
 
 def base_ref():
-    """Base branch: $SHIP_BASE_BRANCH -> origin/HEAD -> origin/main -> origin/master."""
+    """Base branch: $SHIP_BASE_BRANCH -> origin/HEAD -> origin/main -> origin/<base>."""
     env = os.environ.get("SHIP_BASE_BRANCH")
     if env:
         return env
     head = git("symbolic-ref", "--short", "refs/remotes/origin/HEAD").strip()
     if head:
         return head
-    for ref in ("origin/main", "origin/master"):
+    for ref in ("origin/main", "origin/<base>"):
         if git("rev-parse", "--verify", "--quiet", ref).strip():
             return ref
-    return "origin/master"
+    return "origin/<base>"
 
 
 root = git("rev-parse", "--show-toplevel").strip()

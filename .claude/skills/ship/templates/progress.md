@@ -72,8 +72,18 @@ Ký hiệu phase: ⬜ chưa làm · 🔄 đang code · 👀 đã báo cáo, ch�
 
 ## Waiting on user
 
-{{Để trống nếu không chờ. Nếu chờ: chờ ở gate nào, câu hỏi là gì, hỏi lúc nào.
-Trả lời xong → XOÁ khỏi mục này, đừng để lịch sử tồn.}}
+{{Để trống nếu không chờ. Mỗi câu hỏi gửi anh = 1 dòng ở đây NGAY lúc hỏi: `- <ngày> <câu hỏi> (gợi ý của em: …)`.
+Trả lời xong → XOÁ khỏi mục này (quyết định thì ghi decisions.md). Hook mở phiên in mục này ra cho session sau.}}
+
+---
+
+## Trạng thái store test
+
+{{Mỗi lần dựng/đổi gì trên store test thì thêm 1 dòng NGAY (người kiểm thử hoặc parent). Hook mở phiên in mục này
+để session sau dùng lại, không dựng lại (2026-11-04: mất cả buổi dựng lại trạng thái đã có).}}
+
+| store | đã đổi (theme, loyalty page V1/V2, plan, program id, customer id/email, block, market) | lúc | còn đúng? |
+|---|---|---|---|
 
 ---
 

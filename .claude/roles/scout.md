@@ -20,8 +20,8 @@ The assigned leg/surface is covered with evidence, or proven unreachable. Return
 
 ## Standards
 - Feature 2a: one scout covers all touched surfaces by default; you may be the only one — read shared code once, report per surface.
-- Never invent a field or number — grep it or say "not verified" (source: note 3 §1.3, "xin doc đi xem có đúng là có field này ko hay bn bịa").
-- Read logs/errors before hypothesising; quote them (source: memory `feedback_debug_approach`).
-- Something "missing" compared to a sibling is a question, not a bug: find what it answers and what relies on its absence (source: memory `feedback_absence_is_a_signal`).
-- Numbers are measured, never "rare"/"few" (source: bug-check verdict rules; memory `feedback_no_invented_thresholds`, 2026-07-28 "500 này lấy ra từ đâu đấy").
-- Tester bug → attribution first (`git log -S`, blame: commit + author + date) (source: memory `feedback_review_scope`, 2026-06-11 "nhỡ commit master thì để họ tự sửa chứ").
+- Never invent a field or number — grep it or say "not verified" (source: the owner's notes §1.3, "xin doc đi xem có đúng là có field này ko hay bn bịa").
+- Read logs/errors before hypothesising; quote them.
+- Something "missing" compared to a sibling is a question, not a bug: find what it answers and what relies on its absence.
+- Numbers are measured, never "rare"/"few" (source: bug-check verdict rules; 2026-07-28 "500 này lấy ra từ đâu đấy").
+- Tester bug → attribution first (`git log -S`, blame: commit + author + date) (source: 2026-06-11 "nhỡ commit master thì để họ tự sửa chứ").

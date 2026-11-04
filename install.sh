@@ -41,7 +41,7 @@ def cmd(name, timeout=10):
     return {"type": "command", "command": f'bash "$CLAUDE_PROJECT_DIR/.claude/hooks/{name}.sh"', "timeout": timeout}
 wanted = [
     ("PreToolUse", "Write|Edit", ["ship-auto-guard"]),
-    ("PreToolUse", "Bash", ["branch-guard", "ship-auto-guard", "ship-scope-guard"]),
+    ("PreToolUse", "Bash", ["branch-guard", "block-git-discard", "ship-auto-guard", "ship-scope-guard"]),
     ("Stop", None, ["ship-state-sync", "ship-auto-continue"]),
     ("PreCompact", None, ["ship-state-sync"]),
     ("SessionStart", "startup|resume|compact", ["ship-context-restore"]),
@@ -72,7 +72,8 @@ for e in .claude/ship/ .claude/ship-profile.md .claude/settings.local.json .clau
          .claude/skills/ship-verify .claude/skills/ship-review .claude/skills/ship-board \
          .claude/hooks/ship-mode-card.sh .claude/hooks/ship-auto-continue.sh .claude/hooks/ship-auto-guard.sh \
          .claude/hooks/ship-scope-guard.sh .claude/hooks/ship-state-sync.sh .claude/hooks/ship-context-restore.sh \
-         .claude/hooks/branch-guard.sh .claude/scripts/ship-auto-run.sh .claude/scripts/ship-board.sh .claude/scripts/ship-export.sh .claude/scripts/diff-guard.mjs .claude/diff-guard.json; do
+         .claude/hooks/branch-guard.sh .claude/scripts/ship-auto-run.sh .claude/scripts/ship-board.sh .claude/scripts/ship-export.sh .claude/scripts/diff-guard.mjs .claude/diff-guard.json \
+         .claude/hooks/block-git-discard.sh .claude/scripts/branch-drift.mjs .claude/scripts/merge-survival.mjs .claude/scripts/plan-add.mjs .claude/scripts/select-cases.mjs .claude/scripts/codex-review.mjs; do
   grep -qxF "$e" "$EX" || echo "$e" >> "$EX"
 done
 echo "✓ kit + task state hidden from git (.git/info/exclude). Want to commit it for your team instead? Remove those lines."

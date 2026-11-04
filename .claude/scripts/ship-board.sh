@@ -31,9 +31,9 @@ for line in subprocess.run(["git", "-C", root, "worktree", "list", "--porcelain"
         cur["branch"] = line[7:].replace("refs/heads/", "")
 def _git(*a):
     return subprocess.run(["git", "-C", root, *a], capture_output=True, text=True).stdout.strip()
-# Base branch: $SHIP_BASE_BRANCH -> origin/HEAD -> origin/main -> origin/master
+# Base branch: $SHIP_BASE_BRANCH -> origin/HEAD -> origin/main -> origin/<base>
 BASE = os.environ.get("SHIP_BASE_BRANCH") or _git("symbolic-ref", "--short", "refs/remotes/origin/HEAD") \
-    or next((r for r in ("origin/main", "origin/master") if _git("rev-parse", "--verify", "--quiet", r)), "origin/master")
+    or next((r for r in ("origin/main", "origin/<base>") if _git("rev-parse", "--verify", "--quiet", r)), "origin/<base>")
 subprocess.run(["git", "-C", root, "fetch", "-q", "origin", BASE.split("/", 1)[-1]], capture_output=True)
 
 def merged(br):

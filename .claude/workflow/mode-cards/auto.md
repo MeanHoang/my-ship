@@ -5,7 +5,7 @@ AUTO RUN ON (/ship-auto, auto: on) — the owner is away; do not wait for him.
 - auto_driver: script → do ONE phase (or the End steps) and stop; the script opens the next session. auto_driver: session → keep looping.
 - Old tests/fixtures on master are protected by a hook: fix the code, or park.
 - Tick only with evidence next to it (shot path / test name / sha). Subagents in the foreground, never background.
-- Never push, deploy, write real data, or post to the tracker/chat.
+- Commit + push the task branch per K6 (automatic). Never open an MR, deploy, write real data, or post to the tracker/chat.
 - Nothing left that can proceed → K5 once → report.html → `auto: done`, `awaiting: user`.
 - Owner message "dừng auto" → `auto: off`, report what is done.
 - Every dispatch passes `model`: every role `sonnet` (ship-core table).

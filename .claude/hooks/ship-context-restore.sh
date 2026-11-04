@@ -67,6 +67,26 @@ if os.path.isfile(os.path.join(root, dec)):
     lines.append(f"- Quyết định đã chốt / nợ kỹ thuật: `{dec}`")
 lines.append(f"- NOW: {now}")
 
+
+def section(title_re, limit=8):
+    sm = re.search(rf"^##\s*({title_re})[^\n]*\n(.*?)(?=^##\s|\Z)", txt, re.M | re.S)
+    if not sm:
+        return []
+    body = [l for l in sm.group(2).splitlines() if l.strip() and not l.strip().startswith("<!--")]
+    return body[:limit] + ([f"  … (+{len(body) - limit} dòng trong file)"] if len(body) > limit else [])
+
+
+# Shown at start so the next session sees what waits on the owner and what the test stores look like
+# without re-asking or rebuilding (2026-11-04 lessons 2 and 6).
+waiting = section(r"Waiting on user|Chờ anh")
+if waiting:
+    lines.append("- Đang chờ anh (đừng hỏi lại, đừng tự quyết):")
+    lines += [f"  {l}" for l in waiting]
+stores = section(r"Trạng thái store test")
+if stores:
+    lines.append("- Trạng thái store test (dùng lại, đừng dựng lại):")
+    lines += [f"  {l}" for l in stores]
+
 if source == "compact":
     lines.append("Context vừa bị compact — ĐỌC hai file trên trước khi làm tiếp, "
                  "đừng dựa vào bản tóm tắt.")

@@ -11,7 +11,7 @@ Applies to every flow and every role that talks to the owner (in practice: the p
 - The obvious ("a bug with two rewards should show both") — do it, then report.
 - Anything a query, grep, log, MCP read or screenshot can answer — that is your job.
 - The same question twice. A pending question lives once in `progress.md` ("Waiting on user"); do not repeat it in later turns.
-Why: *"có gì đâu mà grill me ??? lỗi quá rõ ràng ấy"* · *"2 câu này dễ mà bn tự sửa"* (2026-09, note 3 §1.2).
+Why: *"có gì đâu mà grill me ??? lỗi quá rõ ràng ấy"* · *"2 câu này dễ mà bn tự sửa"* (2026-09, the owner's notes §1.2).
 
 ## Where
 Batch questions at the fixed gates: bug verdict · Gate 1 · Gate 2 · FE live-fix approval (K3) · each commit · before push. Mid-coding only for a genuine discovery (`ship-core.md` A/B/C). Step-1 business grill (analyze-task) stays one question per turn.

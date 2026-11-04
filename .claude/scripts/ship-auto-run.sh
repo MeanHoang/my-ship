@@ -2,7 +2,7 @@
 # ship-auto-run.sh — chạy `/ship-auto` bằng PHIÊN MỚI CHO MỖI PHASE.
 #
 # Vì sao: chạy nhiều giờ trong một phiên thì context dài dần, compact nhiều lần, luật đầu
-# phiên mờ đi → phase cuối làm ẩu hơn phase đầu ("drift" — Cursor, Anthropic; note 5 mục 4).
+# phiên mờ đi → phase cuối làm ẩu hơn phase đầu ("drift" — Cursor, Anthropic; the owner's notes mục 4).
 # AI không tự gõ /clear được, nên vòng lặp phải nằm NGOÀI Claude: mỗi vòng một `claude -p`
 # mới, đọc progress.md / decisions.md / plan.html từ đĩa, làm ĐÚNG MỘT phase rồi thoát.
 #
@@ -38,7 +38,8 @@ for s in sorted(os.listdir(ship)) if os.path.isdir(ship) else []:
         continue
     g = lambda k: (re.search(rf"^\s*{k}:\s*(.+?)\s*$", t[:1500], re.M) or [None, ""])[1]
     now = (re.search(r"^>\s*\*\*NOW:?\*\*:?\s*(.+)$", t, re.M) or [None, ""])[1]
-    sig = f"{now}|{head}|{len(re.findall(r'^- \[x\]', t, re.M))}"
+    done_count = len(re.findall(r"^- \[x\]", t, re.M))  # outside the f-string: Python 3.9 rejects a backslash inside {}
+    sig = f"{now}|{head}|{done_count}"
     print(p); print(g("auto").lower()); print(g("auto_until")); print(sig)
     break
 PY

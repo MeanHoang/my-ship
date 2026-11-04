@@ -1,13 +1,14 @@
 #!/usr/bin/env bash
 # PreToolUse(Bash) — chặn commit có file NGOÀI PLAN của task ship-*.
 #
-# Vì sao: bảo sửa `my coupon`, AI đổi luôn layout mấy section khác (note 3, 23/09).
+# Vì sao: bảo sửa `my coupon`, AI đổi luôn layout mấy section khác (the owner's notes, 23/09).
 # Cộng đồng gọi là "over-editing": "asked for a one-line fix and get back 40 changed lines
 # across four files" (HN 47866913, 422 điểm). Review cuối lô mới thấy thì đã muộn.
 #
 # Luật: mọi file sắp commit phải được nhắc tới trong progress.md của task (đường dẫn
 # hoặc tên file) — trong checklist phase/bug, hoặc trong "Việc phát sinh ngoài plan".
-# Ngoài plan mà thật sự cần → ghi 1 dòng vào "Việc phát sinh ngoài plan" kèm lý do
+# Ngoài plan mà thật sự cần → `plan-add.mjs --why "<lý do>" <file> && git commit …` (1 lệnh) ghi dòng vào
+# "Việc phát sinh ngoài plan" kèm lý do
 # (và decisions.md nếu là quyết định), rồi commit lại. Muốn gỡ → git restore --staged.
 # Luôn cho qua: test/fixture mới, file dịch (locale), file CI (.gitlab-ci.yml / .github/workflows),
 # và commit merge (đang có MERGE_HEAD) — file từ master không phải sửa lan (owner 2026-10-26).
@@ -63,6 +64,24 @@ for s in sorted(os.listdir(ship)):
 if not progress:
     sys.exit(0)
 plan = open(progress, encoding="utf-8", errors="replace").read()
+# `plan-add.mjs --why "<reason>" <files> && git commit` in the same command: those files are being declared now.
+for part in re.split(r"&&|;|\|\|", cmd):
+    if "plan-add.mjs" not in part or "--why" not in part:
+        continue
+    try:
+        pa = shlex.split(part)
+    except Exception:
+        pa = part.split()
+    pa = pa[pa.index(next(a for a in pa if a.endswith("plan-add.mjs"))) + 1:]
+    skip = False
+    for a in pa:
+        if skip:
+            skip = False
+            continue
+        if a == "--why":
+            skip = True
+            continue
+        plan += "\n" + a
 
 # Files about to be committed: already staged + `git add <paths>` in this same command.
 files = set(l.strip() for l in git("diff", "--cached", "--name-only").splitlines() if l.strip())
@@ -102,8 +121,9 @@ print(json.dumps({"hookSpecificOutput": {
     "permissionDecisionReason": (
         f"⛔ Commit có file NGOÀI PLAN ({rel}): {lst}. "
         "Không cần → `git restore --staged <file>` (và bỏ thay đổi đó). "
-        "Thật sự cần → thêm 1 dòng vào mục 'Việc phát sinh ngoài plan' của progress.md: "
-        "file + lý do (quyết định thì ghi cả decisions.md), rồi commit lại. "
+        "Thật sự cần → ghi vào progress.md và commit lại trong MỘT lệnh: "
+        f"`node .claude/scripts/plan-add.mjs --why \"<lý do>\" {' '.join(outside)} && <lệnh commit cũ>` "
+        "(quyết định thì ghi cả decisions.md). "
         "Chế độ thường: nói rõ file ngoài plan này trong báo cáo cho anh."),
 }}))
 PY

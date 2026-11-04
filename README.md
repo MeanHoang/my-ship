@@ -27,14 +27,25 @@ Gate 2 also turns every GOAL line into an ACC: check (a test with real input/exp
 Code all phases: implementer writes the ACC tests FIRST (they must fail), then codes until they pass,
                  naming the existing pattern it copies
 diff-guard (machine checks of your review rules) → ONE review: "right thing?" + "right code?" (must-fix needs proof)
-→ auto-commit one per phase → ONE verify over all phases incl. a walk through every GOAL line on the real app
-→ push only when told
+→ auto-commit + push one per phase → ONE verify over all phases incl. a walk through every GOAL line on the real app
+→ new MR and deploy only when told
 ```
 🚦 = the agent stops and waits. Silence is never consent.
 
+## What's new (2026-11, second update)
+From real test rounds that were too slow or reported the wrong thing.
+- **Commit and push the task branch automatically.** Ask only about a real trade-off. A new MR, a deploy, or pushing the base or integration branch still needs your word.
+- **Test cases first (`workflow/test-design.md`, role `test-designer`).** Factors → decision table → `test-cases.md` with a `## Setup` table and a start state per case. The first verify runs every case; a retest runs only what `select-cases.mjs --since <sha>` returns.
+- **Test loop (`workflow/test-loop.md`).** Pick local or staging once per task, then test → fix → commit → retest by itself. It stops only on 3 failed fixes of one item, a real trade-off, or a failure that is not yours. Staging goes through one session that owns the integration branch.
+- **The verifier builds its own setup.** Saves, plan changes, theme switches and test data on test environments are its job. A case is `⛔` only after two different routes failed.
+- **Before evidence comes first (K2, K3).** No fix code without a before screenshot or a failing test, or a written reason.
+- **Two reviewers (K5).** A Claude subagent and a one-shot Codex run share `roles/review-checklist.md` and cross-verify. Codex missing → the review goes on and says so. The parent proves each must-fix before you read it.
+- **New checks:** `branch-drift.mjs` (how far behind, which files would conflict, nothing written), `merge-survival.mjs` (task lines lost or functions orphaned by a merge), `plan-add.mjs` (declare an out-of-plan file in the same command as the commit), hook `block-git-discard` (denies `checkout --`, `restore`, `reset --hard`, `stash`, `clean -f`, for subagents too).
+- **Handoff state:** the stop hook rewrites a stale `NOW` line after a new commit; a new session is shown `Waiting on user` and `Trạng thái store test`, so it neither asks again nor rebuilds data.
+
 ## What's new (2026-11)
 Built from Lauren Tan's "trust ladder" talk (Cursor): you only hand more to an agent once you trust its output, and trust comes from verification plus hard checks, not more prose rules.
-- **Commits are automatic, push is not.** An item commits as soon as its evidence exists (one commit per bug / phase); push, MR and deploy still need you.
+- **Commits are automatic.** An item commits as soon as its evidence exists (one commit per bug / phase).
 - **`diff-guard.mjs`** turns your repeated review comments into checks (core lines rewritten, `return undefined`, weakened tests, a mapped route removed). Runs at K4, first in K5, and before every commit.
 - **ACC-first:** each GOAL line becomes a concrete check at Gate 2; tests are written before the code.
 - **Two-part review:** "right thing?" (GOAL / ACC covered, nothing extra, nothing misread) and "right code?" — a must-fix needs a failing test or a numbered flow with real values.
@@ -49,13 +60,14 @@ A `product` subagent (block P) works in three steps:
 At later product decisions (trade-offs that change what users see, direction changes, items parked by auto mode) it returns with one decision card: options · recommendation · fails if · cheapest test · what would change my mind. It recommends; you decide. Built from gstack office-hours, BMAD deep-recon, pm-skills strategy-red-team, The Mom Test, Shape Up and Cagan's four risks.
 
 ## Unattended mode (`/ship-auto`)
-After Gate 2 say **"move auto"** and give a stop time. A driver script runs **one fresh `claude -p` session per phase** (no drift over hours). Each phase is coded, proven, reviewed and auto-committed on the branch (never pushed). Mid-way discoveries are decided with a reversibility-first rule set (`workflow/auto-decide.md`); each decision gets its own `[D-auto-N]` commit so you can `git revert` exactly that choice. Risky decisions (data, other surfaces, cost, security) are parked for you. The run ends with `report.html`: what was built, the decisions to keep or reverse, what is parked.
+After Gate 2 say **"move auto"** and give a stop time. A driver script runs **one fresh `claude -p` session per phase** (no drift over hours). Each phase is coded, proven, reviewed and auto-committed on the branch. Mid-way discoveries are decided with a reversibility-first rule set (`workflow/auto-decide.md`); each decision gets its own `[D-auto-N]` commit so you can `git revert` exactly that choice. Risky decisions (data, other surfaces, cost, security) are parked for you. The run ends with `report.html`: what was built, the decisions to keep or reverse, what is parked.
 
 ## Hard guards (hooks)
 | Hook | Does |
 |---|---|
 | `ship-mode-card` | injects the current mode's rules next to every message, so casual follow-up chat still follows the workflow |
 | `ship-scope-guard` | blocks a commit containing a file not named in the task's `progress.md` (stops over-editing) |
+| `block-git-discard` | blocks git commands that throw away uncommitted work, unless the owner asked (`# owner-asked: "<words>"`) |
 | `ship-auto-guard` | in auto mode: blocks editing/deleting existing tests, fixtures and assertions; blocks deleting checklist items |
 | `ship-auto-continue` | keeps a session-driven auto run going; stops on stall (2× no progress) or at the stop time |
 | `ship-state-sync` / `ship-context-restore` | record session id / restore task context after compaction or resume |

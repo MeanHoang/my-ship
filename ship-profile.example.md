@@ -73,3 +73,14 @@ Which look the product role's HTML mockups should copy: component library / desi
 - Optional: `codePath` (regex of production code), `routesPath` (regex of route files) and `featureMap` (path) for the route check.
 - Add a check to the script only from a review comment you have made at least twice.
 
+## §16 Impact map (optional)
+A command that lists what a change reaches (entry points, shared data). No such tool → write "none"; K4 and K5 then skip that step.
+
+## §17 Edge review (optional)
+A command that hunts edge cases on a backend diff. No such tool → write "none"; K5 goes on without it.
+
+## §19 Test loop (`workflow/test-loop.md`)
+- Local target and how to start and stop the stack (§5).
+- Staging target, the integration branch, and the name of the session that owns it (it merges and deploys on `MERGE-DEPLOY`). No shared staging → write "local only".
+- Base branch other than `main`: set `SHIP_BASE_REF` (e.g. `origin/master`) in the environment; `branch-drift`, `select-cases` and `codex-review` read it.
+- Test environments the verifier may change freely, and what stays read-only.

@@ -60,7 +60,7 @@ for slug in sorted(os.listdir(ship)):
         break
 
 # Không khớp branch → tìm hồ sơ ghi lệch tên (vd `branch: feature-x` thay vì `feature/x`,
-# tức là ghi tên thư mục worktree). Lệch tên thì hook này và web AI Office đều bỏ qua
+# tức là ghi tên thư mục worktree). Lệch tên thì hook này và the task board đều bỏ qua
 # hồ sơ trong im lặng (sự cố 2026-10-12, in-app-ui-figma-redesign). Đúng 1 hồ sơ gần
 # đúng → tự sửa dòng `branch:`; nhiều hơn → chỉ báo.
 if not target and branch not in ("master", "main", "HEAD"):
@@ -95,6 +95,28 @@ if not m:
 block = m.group(1)
 now = datetime.datetime.now().strftime("%Y-%m-%d %H:%M")
 fields = {"session": sid, "head": head, "updated": now}
+
+# NOW line kept honest (2026-11-04: a NOW line two days old survived several commits and an outward post).
+# The session writes NOW itself (K6); this only catches the case it forgot: HEAD moved since the last sync
+# while the NOW text did not change → rewrite NOW as "(auto …) last commit …", keeping the old text short.
+import hashlib
+now_re = re.compile(r"^>\s*\*\*NOW:?\*\*:?\s*(.*)$", re.M)
+nm = now_re.search(txt)
+now_text = nm.group(1).strip() if nm else ""
+now_hash = hashlib.sha1(now_text.encode()).hexdigest()[:10]
+prev_hash = (re.search(r"^\s*now_hash:\s*(\S+)", block, re.M) or [None, ""])[1]
+prev_head = (re.search(r"^\s*now_head:\s*(\S+)", block, re.M) or [None, ""])[1]
+if now_hash != prev_hash or not prev_head:
+    prev_head = head                      # NOW was (re)written by the session: it describes this HEAD
+elif head and head != prev_head:
+    subject = git("log", "-1", "--format=%s")[:90]
+    before = re.sub(r"^\(auto [^)]*\)[^|]*\|\s*trước đó:\s*", "", now_text)[:140]
+    auto = f"(auto {now}) commit mới nhất `{head}` {subject} — dòng NOW chưa được cập nhật | trước đó: {before}"
+    txt = now_re.sub(lambda _: f"> **NOW:** {auto}", txt, count=1) if nm else txt[:m.end()] + f"\n\n> **NOW:** {auto}" + txt[m.end():]
+    m = re.search(r"<!-- state\n(.*?)\n-->", txt, re.S)
+    now_hash = hashlib.sha1(auto.encode()).hexdigest()[:10]
+    prev_head = head
+fields.update({"now_hash": now_hash, "now_head": prev_head})
 if not sid:
     fields.pop("session")
 

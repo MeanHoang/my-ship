@@ -5,6 +5,10 @@
 ## Input
 K2 output, K1 flow, `progress.md`, `decisions.md`, the role file, and for a feature the phase card from `plan.html` §4.
 
+## Before writing code
+The K2 before evidence exists (`tmp/shots/<bug>-1-before.png` / `tmp/logs/<bug>-fail.txt`) or `progress.md` says why not. Missing → back to K2 first.
+First code of this session (resumed task, new session) → run `branch-drift.mjs` again (K0 step 1); a few seconds. Exit 2 → tell the owner before coding.
+
 ## FE — prove the direction in the browser first
 1. Verifier tries the fix **live** in the browser (DevTools CSS / the profile §4 override). No code yet.
 2. Screenshot → `tmp/shots/<bug>-2-live-fix-override.png`.
