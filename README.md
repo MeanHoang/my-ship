@@ -18,6 +18,7 @@ Measured on several thousand owner messages across months of real sessions: the 
 | `/ship-verify` | "is this really fixed?" — prove it, anywhere |
 | `/ship-review` | one review round of a branch, anywhere |
 | `/ship-board` | table of every running task and what waits on you |
+| `/ship-manager` | a chat that manages all your workspaces: who waits on you, who may be stuck, open/close workspaces, work report |
 
 ## How a feature flows
 ```
@@ -31,6 +32,14 @@ diff-guard (machine checks of your review rules) → ONE review: "right thing?" 
 → new MR and deploy only when told
 ```
 🚦 = the agent stops and waits. Silence is never consent.
+
+## What's new (2026-11-12): ship manager
+One chat to run the rest. Start it in its own terminal of the main checkout: `claude -n ship-manager "/ship-manager"`.
+- **Status of every workspace** (`scripts/ship-manager-status.py`, read-only, needs the Orca CLI): which session asks you something, which is working but silent for more than 15 minutes, what is running (its `NOW` line), what is merged and clean, what has unpushed or uncommitted work.
+- **Reads the screen before saying "stuck"**: a permission prompt or a question on screen means it waits on you.
+- **Acts on your word only**: nudges a silent session, opens a workspace with the kit installed and the first prompt sent, closes a merged one after showing its checks. It never codes, commits, approves or answers in your place.
+- **Watch mode**: `/loop 15m /ship-manager status` reports only what changed.
+- Run every session in the same permission mode: a session in another mode holds messages from other sessions for your approval.
 
 ## What's new (2026-11, second update)
 From real test rounds that were too slow or reported the wrong thing.
@@ -90,17 +99,17 @@ Re-run `install.sh` to update; your profile is never overwritten. The kit and ta
 ## Layout
 ```
 .claude/
-├── skills/ship*/              8 skills (+ templates: progress, decisions, product, plan-doc.html, report.html)
+├── skills/ship*/              9 skills (+ templates: progress, decisions, product, plan-doc.html, report.html)
 ├── workflow/ship-core.md      shared rules: routing, gates, --note, discoveries, artifacts, resume, models
 ├── workflow/blocks/K0…K7.md   open · evidence · reproduce · fix · confirm · review · commit · ship
 ├── workflow/blocks/P-product.md  product Discover / Decide
 ├── workflow/auto-decide.md    how the agent decides alone in /ship-auto
 ├── workflow/grill-me.md       when and how to ask the owner
 ├── workflow/mode-cards/       per-mode rule cards injected every turn
-├── roles/*.md                 parent · product · scout · implementer · verifier · reviewer (+ Standards that grow)
+├── roles/*.md                 parent · product · scout · implementer · verifier · reviewer · test-designer · ship-manager (+ Standards that grow)
 ├── hooks/                     the guards above
 ├── skills/ship*/evals/        eval cases: re-test a skill after editing it
-└── scripts/                   ship-auto-run.sh · ship-board.sh · ship-export.sh · diff-guard.mjs
+└── scripts/                   ship-auto-run.sh · ship-board.sh · ship-export.sh · diff-guard.mjs · ship-manager-status.py
 ship-profile.example.md        copy to .claude/ship-profile.md and fill
 ```
 

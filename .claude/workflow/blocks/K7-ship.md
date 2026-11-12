@@ -31,3 +31,6 @@ After the retest above, and only once the owner asked for it this round: follow 
 
 ## Stop when
 The requested step is done and reported with links/images. Never chain push → deploy → retest without each being asked.
+
+## Report in the Slack thread (owner 2026-11-10)
+Task from a Slack thread → report and ask for the merge **in that thread**, not in GitLab (profile §9 "Reporting channel"). Message = problem, goal, how it was handled, verify with images (CDN links), MR link, reviewer tagged by Slack id. Post only after the owner asks for it; read the posted message back (`ok:true`, `thread_ts`).

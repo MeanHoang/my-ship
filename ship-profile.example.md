@@ -84,3 +84,9 @@ A command that hunts edge cases on a backend diff. No such tool → write "none"
 - Staging target, the integration branch, and the name of the session that owns it (it merges and deploys on `MERGE-DEPLOY`). No shared staging → write "local only".
 - Base branch other than `main`: set `SHIP_BASE_REF` (e.g. `origin/master`) in the environment; `branch-drift`, `select-cases` and `codex-review` read it.
 - Test environments the verifier may change freely, and what stays read-only.
+
+## §20 Ship manager (`roles/ship-manager.md`, `/ship-manager`)
+- Where it runs (main checkout path) and the permission mode every session uses (one mode for all, so messages between sessions are not held).
+- Status rule it checks: how often a running session must report (default 15 minutes).
+- How to install the kit into a new worktree (e.g. `bash /path/to/my-ship/install.sh <worktree>`), the base branch, the session command for a new workspace, and the first prompt per entry point.
+- What to stop before closing a workspace (dev servers, local deps), and the task-tracker command for the work report, if any.

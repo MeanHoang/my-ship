@@ -13,9 +13,9 @@ SRC="$(cd "$(dirname "$0")/.." && pwd)"          # .claude of the source project
 DEST="${1:?usage: ship-export.sh <dest-repo-dir>}"
 [ -d "$DEST/.git" ] || { echo "$DEST is not a git repo"; exit 1; }
 
-SKILLS=(ship ship-new ship-auto ship-bugs ship-fix ship-verify ship-review ship-board)
+SKILLS=(ship ship-new ship-auto ship-bugs ship-fix ship-verify ship-review ship-board ship-manager)
 HOOKS=(ship-mode-card ship-auto-continue ship-auto-guard ship-scope-guard ship-state-sync ship-context-restore branch-guard block-git-discard)
-SCRIPTS=(ship-auto-run.sh ship-board.sh ship-export.sh branch-drift.mjs merge-survival.mjs plan-add.mjs select-cases.mjs codex-review.mjs)
+SCRIPTS=(ship-auto-run.sh ship-board.sh ship-export.sh branch-drift.mjs merge-survival.mjs plan-add.mjs select-cases.mjs codex-review.mjs ship-manager-status.py)
 
 rm -rf "$DEST/.claude/skills" "$DEST/.claude/workflow" "$DEST/.claude/roles" "$DEST/.claude/hooks" "$DEST/.claude/scripts"
 mkdir -p "$DEST/.claude/skills" "$DEST/.claude/hooks" "$DEST/.claude/scripts" "$DEST/.claude/roles"
@@ -26,7 +26,7 @@ rm -rf "$DEST/.claude/workflow/tester-report.md" "$DEST/.claude/workflow/tester-
 cp "$SRC"/roles/*.md "$DEST/.claude/roles/"
 for h in "${HOOKS[@]}"; do cp "$SRC/hooks/$h.sh" "$DEST/.claude/hooks/"; done
 for f in "${SCRIPTS[@]}"; do cp "$SRC/scripts/$f" "$DEST/.claude/scripts/"; done
-chmod +x "$DEST"/.claude/hooks/*.sh "$DEST"/.claude/scripts/*.sh
+chmod +x "$DEST"/.claude/hooks/*.sh "$DEST"/.claude/scripts/*.sh "$DEST"/.claude/scripts/*.py
 
 # Strip owner-private citations; keep the owner's quotes and dates (they show why a rule exists).
 python3 - "$DEST/.claude" <<'PY'
