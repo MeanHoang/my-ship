@@ -65,7 +65,7 @@ PHASE_PROMPT="You are the PARENT of a ship-auto run, in a FRESH session started 
 
 final() {
   echo "[$(date +%H:%M)] phiên cuối: $1"
-  "$CLAUDE_BIN" -p --dangerously-skip-permissions --output-format stream-json --verbose \
+  "$CLAUDE_BIN" -p --model opus --dangerously-skip-permissions --output-format stream-json --verbose \
     "You are the PARENT of a ship-auto run (fresh session, auto_driver: script). $1 Do NOT start a new phase. Read $REL and decisions.md, write report.html per .claude/skills/ship-auto/SKILL.md 'End' (say in section 4 why the run stopped), set auto: done and awaiting: user in the state block, then stop. Never push." \
     > "$LOGS/auto-run-final-$(date +%Y%m%d-%H%M).jsonl" 2>&1
 }
@@ -79,7 +79,7 @@ while :; do
   fi
   n=$((n+1)); before=$SIG
   echo "[$(date +%H:%M)] vòng $n"
-  "$CLAUDE_BIN" -p --dangerously-skip-permissions --output-format stream-json --verbose "$PHASE_PROMPT" \
+  "$CLAUDE_BIN" -p --model opus --dangerously-skip-permissions --output-format stream-json --verbose "$PHASE_PROMPT" \
     > "$LOGS/auto-run-$(printf %02d $n)-$(date +%Y%m%d-%H%M).jsonl" 2>&1
   read_state
   [ "$AUTO" = "on" ] || { echo "[$(date +%H:%M)] auto=$AUTO → xong"; exit 0; }

@@ -8,4 +8,4 @@ AUTO RUN ON (/ship-auto, auto: on) — the owner is away; do not wait for him.
 - Commit + push the task branch per K6 (automatic). Never open an MR, deploy, write real data, or post to the tracker/chat.
 - Nothing left that can proceed → K5 once → report.html → `auto: done`, `awaiting: user`.
 - Owner message "dừng auto" → `auto: off`, report what is done.
-- Every dispatch passes `model`: every role `sonnet` (ship-core table).
+- Every dispatch passes `model`: every role `sonnet` except reviewer, scout, test-designer `fable` (ship-core table).

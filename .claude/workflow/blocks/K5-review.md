@@ -1,6 +1,6 @@
 # K5 — Review, one round
 
-**Role:** reviewer (`.claude/roles/reviewer.md`): TWO reviewers in parallel on the same checklist (`.claude/roles/review-checklist.md`), one Claude subagent + one Codex run; each cross-verifies the other's findings. Parent re-verifies and reports.
+**Role:** reviewer (`.claude/roles/reviewer.md`, `model: fable` per the ship-core table): TWO reviewers in parallel on the same checklist (`.claude/roles/review-checklist.md`), one Claude subagent + one Codex run; each cross-verifies the other's findings. Parent re-verifies and reports.
 Why: benchmark 2026-11-02 on real merge requests: Claude + Codex on this checklist caught 72% of verified bugs vs 39% for the old single review; each model found bugs the other missed.
 
 ## First: machine checks

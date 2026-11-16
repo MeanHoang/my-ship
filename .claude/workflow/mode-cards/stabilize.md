@@ -5,4 +5,4 @@ MODE STABILIZE (/ship-bugs, tester bugs) — applies to EVERY message in this se
 - Every read/code/screenshot/review step = a subagent with its role file (.claude/roles/*.md) + profile §11 + block (.claude/workflow/blocks/K*.md). Parent does not code.
 - End of batch: K5 once (reviewer runs the review command, profile §8). Push/deploy only when told.
 - Owner rejected the same fix twice → stop, log what failed in decisions.md, new implementer with a rewritten brief.
-- Every dispatch passes `model`: every role `sonnet` (ship-core table).
+- Every dispatch passes `model`: every role `sonnet` except reviewer, scout, test-designer `fable` (ship-core table).

@@ -34,16 +34,16 @@ Parent = this session: orchestrates, verifies, asks, commits (`roles/parent.md`)
 - Report: the full report goes to `.claude/ship/<slug>/tmp/logs/<role>-<item>.md`; the final message is ≤ 20 lines (verdict, counts, the file path). Long final messages were cut off three times.
 - Git: never `git checkout -- / <ref> -- <path>`, `git restore` (except `--staged`), `git reset --hard`, `git stash`, `git clean` (hook `block-git-discard.sh` denies them for subagents too).
 
-**Model per role — always pass `model` on the dispatch** (an omitted model inherits the session's, usually the most expensive; owner decision 2026-09-29; every role on `sonnet` since 2026-09-30):
+**Model per role — always pass `model` on the dispatch** (an omitted model inherits the session's, usually the most expensive; owner decision 2026-09-29; every role on `sonnet` since 2026-09-30, reviewer, scout, test-designer on `fable` since 2026-11-13):
 | Role | `model` | Why |
 |---|---|---|
-| parent | the session's own (owner picks); `/ship-auto` phase sessions inherit it | decides, talks to the owner |
-| scout | `sonnet` | judgement-heavy reading; where invented facts start |
+| parent | `opus` (Opus 5.5): every task session is launched with `claude --model opus` (profile §20, bug-check hand-off, `ship-auto-run.sh`); a session started otherwise switches with `/model opus`. Owner 2026-11-13: "role parent nâng lên opus" | decides, talks to the owner |
+| scout | `fable` (Fable 5.2) | judgement-heavy reading; where invented facts start. Gathers the facts the plan stands on (Gate 2 · 2a). Owner 2026-11-13: plan roles on Fable 5.2 |
 | product | `sonnet` | worth-it / scope judgement; research with sources |
-| reviewer | `sonnet` | judgement; a weak review lets bugs through |
+| reviewer | `fable` (Fable 5.2) | judgement; a weak review lets bugs through. Owner 2026-11-13: "đổi harness ship review chạy fable 5.2". Also the Claude cross-verify of Codex findings (same role) |
 | implementer | `sonnet` | follows a plan with a pattern reference; checked by verifier + reviewer. New implementer after two rejected fixes → a fresh `sonnet` with a rewritten brief |
 | verifier | `sonnet` | runs tests / drives the browser; evidence is machine-checked |
-| test-designer | `sonnet` | writes `test-cases.md` before the first verify, without the diff (`workflow/test-design.md`) |
+| test-designer | `fable` (Fable 5.2) | writes `test-cases.md` before the first verify, without the diff (`workflow/test-design.md`); its cases become the plan's ACC lines (Gate 2 · 2c+). Owner 2026-11-13 |
 A project may override this table in profile §7.
 
 **The line:** reading and rendering run alone; every step that DECIDES (grill, trade-offs, phase order, verdicts, commits) stays with parent + owner — a subagent cannot talk to him.
@@ -76,6 +76,7 @@ Laws: `progress.md` is a projection of the plan (or bug list), not a journal —
 5. More than one NOW line → keep the one consistent with `git log`, delete the rest, mention it.
 
 ## Rules
+- **A page shown to the owner has no broken image:** before `open` of any local HTML (`tmp/mockups/index.html`, `report.html`, `plan.html`), run `node .claude/scripts/page-images-check.mjs <page>`; exit 2 → fix the paths / re-shoot first (/ship-learn 2026-11-16: "ảnh lỗi vậy ???").
 - A turn answering his pushback shows what was checked: re-read it, name the `file:line` and what you found (incl. "anh đúng" or "không verify được"). "đã sửa rồi anh" without an image or test output is the highest-risk sentence here.
 - The same fix rejected twice → stop, log what failed, new implementer (roles/parent.md).
 - Commit = automatic once the item has its evidence, one commit per item (K6, owner 2026-11-02); `/ship` and `/ship-auto` commit per phase after the single K5 review. Push of the task branch follows each commit automatically (K6, owner 2026-11-03); new MR / deploy / retest = separate explicit instruction (K7).

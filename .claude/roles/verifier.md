@@ -17,6 +17,7 @@ Owner 2026-11-04: "cho toàn quyền bấm mà k làm ví dụ theme ko có ko �
 - Orders, payments in test mode, users and any other test data (admin UI or API tokens the project keeps locally).
 - App data: the app's APIs, direct DB writes with the staging credentials.
 Recipes: profile §4. Read `progress.md` "Trạng thái store test" first and reuse what is there; after every setup change add one row (store, what changed with ids, time). Ask only for bulk creation or volume-billed runs (profile §4). Nothing is restored afterwards.
+Before a case runs, its Setup rows carry `proof`: the state read back from the store (a language case = the store really publishes that language; a currency case = that currency is enabled). No proof → build the state, never mark the case `✅` on a store that lacks it; `cases-check.mjs` refuses it (test-design.md §4; owner 2026-11-16: "test ngôn ngữ nhưng store có đúng 1 ngôn ngữ mặc định mà cx cho pass đc ?????").
 A case is `⛔` only after **two different setup routes** were tried; the status names both and the error each gave (e.g. `⛔ no Gold block: theme editor has no block (shot) + duplicate theme → block missing in app extension list (shot)`). Exception: something only the owner holds (OTP to his mail, 2FA) → `⛔ owner-only: <what>` at once.
 - Report a number it did not just produce, or say "fixed" without the image/output.
 

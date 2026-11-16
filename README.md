@@ -33,6 +33,12 @@ diff-guard (machine checks of your review rules) → ONE review: "right thing?" 
 ```
 🚦 = the agent stops and waits. Silence is never consent.
 
+## What's new (2026-11-16): proven test setup, image check, models
+- **A case passes only on a proven start state.** `test-cases.md` Setup rows get a `proof` column: the state read back from the store (e.g. which languages it really publishes). `scripts/cases-check.mjs` fails any ✅ case that stands on an unproven row, so a language case can no longer pass on a single-language store.
+- **No broken image reaches you.** `scripts/page-images-check.mjs <page.html>` checks every local and remote image of a mockup / report page; the kit runs it before opening a page.
+- **Test design factors** add languages (primary only / several / longest text for layout).
+- **Models:** parent `opus`; reviewer, scout and test-designer `fable`; the rest `sonnet` (`workflow/ship-core.md` table). `/ship-auto` phase sessions start with `--model opus`.
+
 ## What's new (2026-11-12): ship manager
 One chat to run the rest. Start it in its own terminal of the main checkout: `claude -n ship-manager "/ship-manager"`.
 - **Status of every workspace** (`scripts/ship-manager-status.py`, read-only, needs the Orca CLI): which session asks you something, which is working but silent for more than 15 minutes, what is running (its `NOW` line), what is merged and clean, what has unpushed or uncommitted work.
@@ -85,7 +91,7 @@ After Gate 2 say **"move auto"** and give a stop time. A driver script runs **on
 
 ## Model per role (limits)
 Every dispatch passes `model` explicitly (an omitted model inherits the session's, usually the most expensive):
-every role on `sonnet` by default (product, scout, reviewer, implementer, verifier) · parent = your session. Override per project in the profile §7.
+`sonnet` by default (product, implementer, verifier) · `fable` for reviewer, scout and test-designer · parent `opus` (task sessions start with `--model opus`). Override per project in the profile §7.
 
 ## Install
 Requirements: Claude Code, `git`, `python3`, `jq`.

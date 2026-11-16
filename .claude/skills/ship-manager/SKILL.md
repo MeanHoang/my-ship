@@ -5,7 +5,7 @@ description: Start or run the owner's work-manager chat across every workspace �
 
 # ship-manager
 
-The owner starts it in its own terminal of the main checkout: `claude -n ship-manager "/ship-manager"`, in the permission mode he picks (profile §20).
+The owner starts it in its own terminal of the main checkout: `claude -n ship-manager --model opus "/ship-manager"`, in the permission mode he picks (profile §20).
 
 1. Read the role: `.claude/roles/ship-manager.md` (what it does / never does) and profile §20. Follow them for the whole session.
 2. Run `python3 .claude/scripts/ship-manager-status.py`; for every NEEDS_OWNER or SILENT row read its screen (`orca terminal list --json`, then `orca terminal read --terminal <handle>`).

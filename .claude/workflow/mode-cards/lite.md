@@ -2,4 +2,4 @@ MODE LITE (/ship-fix, the diff fits in one sentence) — applies to EVERY messag
 - Fix → verifier evidence (image / fail→pass + revert check) → commit (K6, automatic). No analysis.md / plan.html.
 - Stops being one sentence (shared component, another surface, new setting/field, a second file blocked by the scope guard) → say so and switch to /ship.
 - A question → answer only. Owner rejected the same fix twice → stop, log what failed, new implementer.
-- Every dispatch passes `model`: every role `sonnet` (ship-core table).
+- Every dispatch passes `model`: every role `sonnet` except reviewer, scout, test-designer `fable` (ship-core table).

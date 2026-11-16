@@ -52,7 +52,7 @@ Now read the spec (e.g. the BA's task) and fill `product.md` §11:
 Cover: the problem statement, who it is for, v1 scope, screens/flow, settings added, what is left out, success metric. Say plainly where the spec is better. Contradictions with the code or data found in P1 → cite `file:line` / query.
 
 ### Gate
-Parent posts: verdict + confidence, the 3 strongest sourced facts, the P3 table (if any), and runs `open .claude/ship/<slug>/tmp/mockups/index.html` so the mockup is on the owner's screen. 🚦 The owner decides (build / reframe / kill, and which side of each difference); the parent records it in `decisions.md`. Only then Gate 1 continues (analysis.md, GOAL).
+Parent posts: verdict + confidence, the 3 strongest sourced facts, the P3 table (if any), and runs `node .claude/scripts/page-images-check.mjs .claude/ship/<slug>/tmp/mockups/index.html` (exit 0) then `open .claude/ship/<slug>/tmp/mockups/index.html` so the mockup is on the owner's screen. 🚦 The owner decides (build / reframe / kill, and which side of each difference); the parent records it in `decisions.md`. Only then Gate 1 continues (analysis.md, GOAL).
 
 ## Decide — the decision card (same shape every time)
 ```
