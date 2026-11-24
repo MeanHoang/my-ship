@@ -36,7 +36,7 @@ Restart Claude Code and type `/ship <task>`.
 
 ## Commands
 
-| Command | |
+| Command | Does |
 |---|---|
 | `install [dir]` | every skill + the shared core |
 | `add <skill...>` | only the skills you pick |
