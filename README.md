@@ -4,6 +4,21 @@ A set of Claude Code skills, workflow blocks, role cards and hooks that turn one
 
 > Tiếng Việt: bộ skill `ship-*` cho Claude Code — hiểu task → chốt plan → code từng phase → **có bằng chứng (ảnh / test fail→pass) mới được nói "đã sửa"** → commit khi được đồng ý → review 1 vòng. Có chế độ treo máy (`/ship-auto`). Phần riêng của từng project nằm trong `ship-profile.md`.
 
+## Quick start
+Needs `git`, `node` ≥ 18.17, `python3` and `jq`. Nothing to clone or `npm install`: `npx` runs the CLI straight from GitHub.
+
+```bash
+cd /path/to/your/project                         # any git repo
+npx github:MeanHoang/my-ship install             # 1. install every ship-* skill
+# edit .claude/ship-profile.md                   # 2. fill in your project's profile
+npx github:MeanHoang/my-ship doctor              # 3. check: tools, hooks, profile → "all good"
+# restart Claude Code, then type: /ship <task>   # 4. go
+```
+
+Only want some skills? `npx github:MeanHoang/my-ship add ship ship-review`. See every command in [Install](#install).
+
+> **Cài đặt (tiếng Việt):** mở thư mục project (repo git) → chạy `npx github:MeanHoang/my-ship install` → điền `.claude/ship-profile.md` → chạy `npx github:MeanHoang/my-ship doctor` thấy `all good` → mở lại Claude Code và gõ `/ship <task>`. Chỉ cần vài skill: `npx github:MeanHoang/my-ship add ship ship-review`. Cập nhật bản mới: `npx github:MeanHoang/my-ship update`. Gỡ: `npx github:MeanHoang/my-ship remove --all`.
+
 ## What problem it solves
 Measured on several thousand owner messages across months of real sessions: the most expensive failures were the agent claiming "fixed" without proof, misreading the goal, editing far beyond the ask, breaking other surfaces through shared code, forgetting the workflow a few turns after the skill loaded, and burning limits by running every subagent on the top model. Each rule here exists because of one of those.
 
