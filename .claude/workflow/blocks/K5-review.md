@@ -1,6 +1,6 @@
 # K5 — Review, one round
 
-**Role:** reviewer (`.claude/roles/reviewer.md`, `model: fable` per the ship-core table): TWO reviewers in parallel on the same checklist (`.claude/roles/review-checklist.md`), one Claude subagent + one Codex run; each cross-verifies the other's findings. Parent re-verifies and reports.
+**Role:** reviewer (`.claude/roles/reviewer.md`, `model: opus` per the ship-core table): TWO reviewers in parallel on the same checklist (`.claude/roles/review-checklist.md`), one Claude subagent + one Codex run; each cross-verifies the other's findings. Parent re-verifies and reports.
 Why: benchmark 2026-11-02 on real merge requests: Claude + Codex on this checklist caught 72% of verified bugs vs 39% for the old single review; each model found bugs the other missed.
 
 ## First: machine checks
@@ -13,7 +13,7 @@ The report has the two parts in `roles/reviewer.md` Output: "right thing?" (GOAL
 **Once**, after ALL fixes of the batch (bugs) or ALL phases (feature) are done and confirmed (K4). Never per fix, never per phase, never a second round. A big risk seen mid-way → grill the owner (`.claude/workflow/grill-me.md`), do not add a review round.
 
 ## Scope
-`git diff <base>...HEAD` (merge-base diff, base per profile §1) plus uncommitted changes of this task. Exclude generated files (profile §1) except to check they match their sources.
+Run `node .claude/scripts/review-gate.mjs` first; it prints the range. First review of the task, or a merge of master since the last review → `git diff <base>...HEAD` (merge-base diff, base per profile §1; conflict resolutions are new code). Only plain commits since the last review → `git diff <reviewed-sha>..HEAD` (a delta review: same reviewers, smaller diff). Plus uncommitted changes of this task. Exclude generated files (profile §1) except to check they match their sources.
 
 ## Reviewer subagent
 Before dispatch the parent saves `git status --porcelain` (and `git rev-parse HEAD`); after the reviewer returns, both must be identical. A difference = the reviewer edited the repo: list the changed files at the top of the report; do not revert them yourself (no `restore`/`checkout --` without the owner).
@@ -53,7 +53,8 @@ Reviewers (Claude, Codex, edge-review) report claims, not facts. The owner reads
    - must-fix: each with its proof (test name + fail/pass output, or the flow), who found it, recommendation;
    - optional: at most 5, one line each;
    - counts at the end: "Reviewers raised N → duplicates D, already decided X, refuted R (with the refuting line), unproven → optional U".
-6. Accepted findings → K3 → K4 → **their own commit** (K6), without re-running K5.
+6. Accepted findings → K3 → K4 → **their own commit** (K6) → a delta review of just those fix commits (same reviewers, `<reviewed-sha>..HEAD`), because a fix is new code (owner 2026-11-16: "khi có thay đổi code merge branch sửa fix cũng đều phải chạy ship review nhé tôi thấy miss không chạy luôn").
+7. **Mark:** when no proven must-fix is left unfixed, `node .claude/scripts/review-gate.mjs --mark` (writes `reviewed-sha: <HEAD>` in `progress.md`). Never mark before the review ran on that range.
 
 ## Stop when
 Report delivered. Nothing is fixed before the owner picks.

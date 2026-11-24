@@ -16,6 +16,7 @@ K0, then route per ship-core "Which skill". Existing branch/progress → `mode: 
 ## Flow
 | # | Step | Block | Role | Stop? |
 |---|---|---|---|---|
+| 0b | **Problem check: the requester's words, one real example, reproduced / seen on the real app** | G0 | parent + scout + verifier (parallel) | 🚦 **Gate 0** — owner confirms the problem |
 | 1 | Verify the spec | 1a | scout | — |
 | 2 | Product: current state + research → proposal + mockup → compare with spec | P1 → P2 → P3 | product (blind to the spec's solution until P3) | 🚦 owner decides |
 | 3 | Understand (business) | 1b–1d | parent | 🚦 **Gate 1** (one question per turn) |
@@ -24,11 +25,15 @@ K0, then route per ship-core "Which skill". Existing branch/progress → `mode: 
 | 6 | Code ALL phases in one go | K3 | implementers (split by layer/disjoint files, may run in parallel) | discoveries only |
 | 7 | Review once over all phases | K5 | reviewer | must-fix → fixed before commit |
 | 8 | Commit one per phase — no ask once the review passes (owner 2026-10-29) | K6 | parent | — |
-| 8b | Verify once over all phases | K4 | verifier | findings → own fix commits |
+| 8b | Verify once over all phases | K4 | verifier | findings → own fix commits → reviewed (`review-gate.mjs` exit 0) before MERGE-DEPLOY / report |
 | 9 | Push / deploy / retest | K7 | parent + verifier | only when told |
+| 10 | Live watch after prod deploy: retest, health, who uses it and how | K8 | parent + verifier | only when `progress.md` has `live_watch: on` (owner names the task) |
+
+### Gate 0 — Problem (owner 2026-11-16)
+Run `.claude/workflow/blocks/G0-problem.md` right after K0, before 1a, block P and any grill. It reproduces or shows the problem on the real app and reports "Em hiểu vấn đề là … — đúng chưa anh?" with the evidence. Nothing after it starts until he confirms; `progress.md` holds `gate0: confirmed`. CONTINUE mode: skip only when `progress.md` already has that line and the requirement did not change.
 
 ### Gate 1 — Understand
-The project's spec tool (profile §1): 1a verify (scout, `file:line`, real numbers — a query that can settle a point settles it here), then block P (P1 current state + research → P2 proposal + mockup → P3 compare with the spec; the parent gives the product role only the goal, never the spec's solution, until P3) — the owner decides on the verdict, mockup and differences before any plan, 1b write `analysis.md` (§1 domain · §2 who hurts, how many · §3 what the app does today · §4 gap · §5 open-points ledger · §6 GOAL empty), 1c grill **one question per turn** — only what he can answer without reading code, 1d fill §6 GOAL with him and copy it into `decisions.md`. No plan here. Ends on his explicit move ("ok", "bước 2", "tiếp" — proceed, not commit).
+Only after Gate 0 is confirmed. The project's spec tool (profile §1): 1a verify (scout, `file:line`, real numbers — a query that can settle a point settles it here), then block P (P1 current state + research → P2 proposal + mockup → P3 compare with the spec; the parent gives the product role only the goal, never the spec's solution, until P3) — the owner decides on the verdict, mockup and differences before any plan, 1b write `analysis.md` (§1 domain · §2 who hurts, how many · §3 what the app does today · §4 gap · §5 open-points ledger · §6 GOAL empty), 1c grill **one question per turn** — only what he can answer without reading code, 1d fill §6 GOAL with him and copy it into `decisions.md`. No plan here. Ends on his explicit move ("ok", "bước 2", "tiếp" — proceed, not commit).
 
 ### Gate 2 — Plan (all verification and all open questions end here)
 - **2a Gather (read-only)** — ONE scout covering every touched surface + backend path by default (parallel scouts each re-read the same shared code — HN: *"launched 7 sub agents which burned through my budget"*); split only for surfaces that share no code. Each confirms/refutes the spec with `file:line` and, per surface, checks: field-trigger loops, the settings chain (profile §2), whether the surface is live, existing users without the new data, database indexes. Backend path → first run the impact map (profile §16) on the functions / `type`s the spec touches; its entry points (section 1) and other readers of written collections (section 3) seed plan §3b "who else uses it" and the 2b sweep — each one is still confirmed by reading the code. Output `facts.md`: `claim | verdict | file:line`.
@@ -50,4 +55,4 @@ Code every phase first (K3), then ONE K5 review over the whole diff, fix its mus
 3. **K4** — screenshots / tests + revert check.
 4. Report: what changed, files, pattern line, lint, before/after images or fail→pass output, what to look at. End with the K6 commit sha (+ a Standards line if he corrected this phase). Phase heading 👀, NOW → "chờ commit phase N".
 5. **K6** after the single K5 review passes → commit (no ask), heading ✅, NOW → next phase.
-No per-phase review — K5 once, after the last phase.
+No per-phase review — K5 once, after the last phase. Fix commits and master merges after it get their own review before MERGE-DEPLOY / report (`review-gate.mjs` exit 0, K5 step 6–7).

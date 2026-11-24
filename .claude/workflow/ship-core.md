@@ -34,16 +34,16 @@ Parent = this session: orchestrates, verifies, asks, commits (`roles/parent.md`)
 - Report: the full report goes to `.claude/ship/<slug>/tmp/logs/<role>-<item>.md`; the final message is ≤ 20 lines (verdict, counts, the file path). Long final messages were cut off three times.
 - Git: never `git checkout -- / <ref> -- <path>`, `git restore` (except `--staged`), `git reset --hard`, `git stash`, `git clean` (hook `block-git-discard.sh` denies them for subagents too).
 
-**Model per role — always pass `model` on the dispatch** (an omitted model inherits the session's, usually the most expensive; owner decision 2026-09-29; every role on `sonnet` since 2026-09-30, reviewer, scout, test-designer on `fable` since 2026-11-13):
+**Model per role — always pass `model` on the dispatch** (an omitted model inherits the session's, usually the most expensive; owner decision 2026-09-29; every role on `sonnet` since 2026-09-30, reviewer, scout, test-designer on `opus` since 2026-11-18 (owner: "fable đổi thành opus"; on `fable` 11-13 → 11-18)):
 | Role | `model` | Why |
 |---|---|---|
 | parent | `opus` (Opus 5.5): every task session is launched with `claude --model opus` (profile §20, bug-check hand-off, `ship-auto-run.sh`); a session started otherwise switches with `/model opus`. Owner 2026-11-13: "role parent nâng lên opus" | decides, talks to the owner |
-| scout | `fable` (Fable 5.2) | judgement-heavy reading; where invented facts start. Gathers the facts the plan stands on (Gate 2 · 2a). Owner 2026-11-13: plan roles on Fable 5.2 |
+| scout | `opus` (Opus 5.5) | judgement-heavy reading; where invented facts start. Gathers the facts the plan stands on (Gate 2 · 2a). Owner 2026-11-13 plan roles on Fable 5.2, 2026-11-18 on Opus |
 | product | `sonnet` | worth-it / scope judgement; research with sources |
-| reviewer | `fable` (Fable 5.2) | judgement; a weak review lets bugs through. Owner 2026-11-13: "đổi harness ship review chạy fable 5.2". Also the Claude cross-verify of Codex findings (same role) |
+| reviewer | `opus` (Opus 5.5) | judgement; a weak review lets bugs through. Owner 2026-11-13: "đổi harness ship review chạy fable 5.2". Moved to Opus 2026-11-18. Also the Claude cross-verify of Codex findings (same role) |
 | implementer | `sonnet` | follows a plan with a pattern reference; checked by verifier + reviewer. New implementer after two rejected fixes → a fresh `sonnet` with a rewritten brief |
 | verifier | `sonnet` | runs tests / drives the browser; evidence is machine-checked |
-| test-designer | `fable` (Fable 5.2) | writes `test-cases.md` before the first verify, without the diff (`workflow/test-design.md`); its cases become the plan's ACC lines (Gate 2 · 2c+). Owner 2026-11-13 |
+| test-designer | `opus` (Opus 5.5) | writes `test-cases.md` before the first verify, without the diff (`workflow/test-design.md`); its cases become the plan's ACC lines (Gate 2 · 2c+). Owner 2026-11-13 |
 A project may override this table in profile §7.
 
 **The line:** reading and rendering run alone; every step that DECIDES (grill, trade-offs, phase order, verdicts, commits) stays with parent + owner — a subagent cannot talk to him.

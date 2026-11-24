@@ -88,5 +88,5 @@ A command that hunts edge cases on a backend diff. No such tool → write "none"
 ## §20 Ship manager (`roles/ship-manager.md`, `/ship-manager`)
 - Where it runs (main checkout path) and the permission mode every session uses (one mode for all, so messages between sessions are not held).
 - Status rule it checks: how often a running session must report (default 15 minutes).
-- How to install the kit into a new worktree (e.g. `bash /path/to/my-ship/install.sh <worktree>`), the base branch, the session command for a new workspace, and the first prompt per entry point.
+- How to install the kit into a new worktree (e.g. `npx github:MeanHoang/my-ship install <worktree>`), the base branch, the session command for a new workspace, and the first prompt per entry point.
 - What to stop before closing a workspace (dev servers, local deps), and the task-tracker command for the work report, if any.

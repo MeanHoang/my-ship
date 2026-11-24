@@ -19,13 +19,13 @@ Started with `/ship-manager` (`.claude/skills/ship-manager/SKILL.md`) in a termi
   ```
   orca worktree create --name <name> --base-branch <base> --no-parent --comment "<task link / ticket id>" --json
   <profile §20: install the kit into the new worktree>
-  orca terminal create --worktree path:<path> --title <name> --command '<profile §20: session command>' --json
-  orca terminal wait --terminal <handle> --for tui-idle --timeout-ms 60000 --json
-  orca terminal send --terminal <handle> --text "<first prompt, e.g. /ship <task url>>" --enter --json
+  bash .claude/scripts/orca-handoff.sh <path> <name> '<profile §20: session command>' '<first prompt, e.g. /ship <task url>>'
   ```
+  Report the workspace as started only on `orca-handoff: landed`; exit 1 → tell the owner it did not land, with the screen tail (/ship-learn 2026-11-24: "ko gửi đc cái gửi lại nhé").
   The new session runs in the same permission mode as the other task sessions (profile §20); a different mode makes cross-session messages wait for the owner's approval.
 - **Close a workspace** only on his word, one by one. First show the checks: `git status --porcelain` empty, 0 unpushed, branch merged into the base (or he says drop it), no agent working. Then: profile §20 stop step (dev stack, local deps) → `orca terminal close --worktree path:<path> --all --json` → `orca worktree rm --worktree path:<path> --json`. Never `--force`, never `--delete-branch` unless he says so.
 - **Work report** ("hôm nay làm gì", "báo cáo công việc"): per workspace the commits since the asked time (`git -C <path> log --since=<time> --oneline`), its NOW line, what waits on him; plus the task-tracker list of profile §20 if it has one.
+- **Live watch due** (owner 2026-11-24): a workspace whose `progress.md` has `live_watch: on` and a K8 check point that is due (right-after / ~24h / ~7d after its prod deploy, `.claude/workflow/blocks/K8-live-watch.md`) is reported as "cần chạy theo dõi sau live"; the task session runs it, this session only reminds.
 - **Watch on its own** when he says "theo dõi" / "canh giúp": `/loop 15m /ship-manager status` re-runs the status and reports only what changed since the last report (new NEEDS_OWNER, new SILENT, finished). Stop on "dừng theo dõi".
 
 ## Does not

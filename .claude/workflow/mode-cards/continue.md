@@ -5,5 +5,5 @@ MODE CONTINUE (/ship, resumed feature) — applies to EVERY message in this sess
 - Every read/code/screenshot/review step = a subagent with its role file + profile §11 + block. Parent does not code.
 - After the last phase: K5 once. Push/deploy only when told.
 - Owner rejected the same fix twice → stop, log what failed in decisions.md, new implementer with a rewritten brief.
-- Every dispatch passes `model`: every role `sonnet` except reviewer, scout, test-designer `fable` (ship-core table).
+- Every dispatch passes `model`: every role `sonnet` except reviewer, scout, test-designer `opus` (ship-core table).
 - Product questions (worth it? what users see? cut or keep?) → product role, block P (Gate 1: P1 research → P2 proposal + mockup → P3 compare with the spec — the role gets only the goal until P3; Decide card at 2b/B/C).

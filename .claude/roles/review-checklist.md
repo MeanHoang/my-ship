@@ -39,4 +39,14 @@ had missed: missing Skip flag, migrated shop, kill-switch shop, and a stray CI c
    - it covers the same population the action affects;
    - singular and plural are both handled.
 
+8. **Layer direction (NEVER violated, owner 2026-11-17: "tối kỵ").** For every added import in
+   `packages/functions/src`, check the direction `handlers/controllers -> services -> repositories`; helpers are pure.
+   Forbidden: controller/handler -> repository, helper -> service/repository/controller, repository -> service/controller,
+   service -> controller. Any hit is a must-fix, never `should-fix`, never "approved in decisions.md" (diff-guard check 11
+   finds the added ones; also read multi-line and dynamic imports the script may miss).
+
+9. **Machine paths (NEVER, owner 2026-11-17).** No absolute path of one machine (`/Users/...`, `/home/...`, `C:\\Users`) in code or tests,
+   above all `require('/Users/...')` in a test: it kills the whole suite on every other machine. Relative paths only
+   (diff-guard check 12 `absolute-path`).
+
 Then report. A must-fix needs a numbered flow with file:line and real values, or a run.

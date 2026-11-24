@@ -32,5 +32,8 @@ After the retest above, and only once the owner asked for it this round: follow 
 ## Stop when
 The requested step is done and reported with links/images. Never chain push → deploy → retest without each being asked.
 
+## Live watch (only when `progress.md` has `live_watch: on`)
+After the prod deploy run `.claude/workflow/blocks/K8-live-watch.md`: retest on the production test account (profile §4), health from logs vs the pre-deploy baseline, and usage numbers (which shops, how many customers/records, how they use it) at right-after / ~24h / ~7d. The owner turns it on per task; never on by default.
+
 ## Report in the Slack thread (owner 2026-11-10)
 Task from a Slack thread → report and ask for the merge **in that thread**, not in GitLab (profile §9 "Reporting channel"). Message = problem, goal, how it was handled, verify with images (CDN links), MR link, reviewer tagged by Slack id. Post only after the owner asks for it; read the posted message back (`ok:true`, `thread_ts`).

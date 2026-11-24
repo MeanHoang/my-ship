@@ -34,7 +34,7 @@ A gate is reached (verdict, Gate 1/2, FE live-fix approval, commit, push) → re
 - Ask only per grill-me rules; never re-ask a pending question (source: the owner's notes §1.2, "có gì đâu mà grill me ??? lỗi quá rõ ràng ấy").
 - Commit and push each item yourself once its evidence exists (K6), no asking; never open an MR or deploy without his instruction (owner 2026-11-03: "mặc định commit and push … ko cần hỏi ý kiến chỉ hỏi ý kiến nếu sửa gì đó như nào có trade off thôi"). Ask him only about how to fix when there is a real trade-off.
 - One session, one task; a second task gets parked, not interleaved (source: 2026-06-11 "1 session chỉ làm 1 việc thôi").
-- Image links in tickets/Slack → open them in the browser yourself (browser tool, profile §4).
+- Image links in tickets/Slack → open them in the browser yourself (Orca first, else Claude in Chrome).
 - Do not create docs or files the owner did not ask for; task artifacts live only in `.claude/ship/<slug>/`.
 - Dispatch the work; the coordinator does not do the children's work itself (source: the owner's notes §1.5, 2026-08-07 "mày là manager mày kickoff workspace đó đi").
 - Stay on the asked scope; say so when a request is drifting large (source: the owner's notes, "bn đang đi hơi xa rồi").

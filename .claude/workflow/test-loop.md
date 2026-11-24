@@ -17,13 +17,13 @@ Write the answer into `progress.md` as `test_target: local` or `test_target: sta
 1. Start the local stack (profile §5).
 2. Test every case in `test-cases.md` (K4: browser tool, profile §4; backend fail→pass + revert check).
 3. Case fails → fix (K3) → commit + push (K6) → retest only the cases `select-cases.mjs --since <last tested sha>` returns (test-design.md §4) **on the same running stack**. Loop.
-4. All items pass, or the loop stops (§4) → **always** stop the local stack (profile §5) before reporting. The stack never stays up after the loop.
+4. All items pass, or the loop stops (§4) → **always** stop the local stack (profile §5) before reporting. Before the report: `node .claude/scripts/review-gate.mjs` exit 0 (fixes made in the loop get their review now). The stack never stays up after the loop.
 
 ## 3. Staging loop (the task session only monitors deploys)
 Step 0, once per bug: take the K2 before evidence on staging BEFORE the first `MERGE-DEPLOY` that carries its fix (staging still runs the old build).
 The task session never touches `<integration-branch>` itself. The session that owns it (named in profile §19, found with `ListAgents`) merges and deploys.
 1. Commit + push the task branch (K6). Note the pushed sha.
-   Then `branch-drift.mjs --against origin/<integration-branch>`. Exit 2 → merge the base branch into the task branch first (the merge procedure of this project, conflicts in this task's files only), push, then send. Conflict that remains against `<integration-branch>` only (another task's files) → name those files in the MERGE-DEPLOY message so the integration session knows before it starts.
+   Then `node .claude/scripts/review-gate.mjs` must exit 0: a fix or merge since the last review → `/ship-review` on the range it prints, `--mark`, then continue (owner 2026-11-16: "khi có thay đổi code merge branch sửa fix cũng đều phải chạy ship review nhé tôi thấy miss không chạy luôn"). Then `branch-drift.mjs --against origin/<integration-branch>`. Exit 2 → merge the base branch into the task branch first (the merge procedure of this project, conflicts in this task's files only), push, then send. Conflict that remains against `<integration-branch>` only (another task's files) → name those files in the MERGE-DEPLOY message so the integration session knows before it starts.
 2. `SendMessage` to that session, first line exactly:
    `MERGE-DEPLOY staging: branch <task branch> sha <sha> from <this session name>`
    then one line on what the task changed (files / area) so it can resolve conflicts.
@@ -32,7 +32,7 @@ The task session never touches `<integration-branch>` itself. The session that o
 4. Reply `DEPLOYED …` → first round: every case in `test-cases.md`; later rounds: only the cases `select-cases.mjs --since <last tested sha>` returns (test-design.md §4). On staging, K4 rules, images.
    Reply `BLOCKED …` → stop the loop, tell the owner the reason verbatim.
 5. Item fails → fix (K3) → commit + push → back to step 2 with the new sha. Loop.
-6. All cases ✅ (or accepted ⛔) → report (proof per case + the counts line) and stop.
+6. All cases ✅ (or accepted ⛔) → `node .claude/scripts/review-gate.mjs` exit 0 (else `/ship-review` the range, `--mark`) → report (proof per case + the counts line + the review-gate line) and stop.
 
 ## 4. Stop the loop and ask the owner when
 - the same item failed after **3** fixes (show the 3 attempts);

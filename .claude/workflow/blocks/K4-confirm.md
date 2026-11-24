@@ -6,13 +6,13 @@
 K3 diff, the K2 before-evidence (same URL / state / widths, same test), `progress.md`.
 
 ## Which cases
-The cases come from `.claude/ship/<slug>/test-cases.md`, written by the `test-designer` before the first K4 (`.claude/workflow/test-design.md`; no file yet → dispatch it first). Clicking the happy path once is not a verify (owner 2026-11-03). First verify of the task: every case, report `N cases: ✅ X, ❌ Y, ⛔ Z (why)`. Every later retest: only the cases `select-cases.mjs --since <last tested sha>` returns (+ new cases for its `unmatched` files), not the whole table.
+The cases come from `.claude/ship/<slug>/test-cases.md`, written by the `test-designer` before the first K4 (`.claude/workflow/test-design.md`; no file yet → dispatch it first). Gate: `cases-check.mjs --cases <file>` exits 0 before the first case (complete table, merchant-first `ui:` cases); exit 2 → back to the test-designer. Clicking the happy path once is not a verify (owner 2026-11-03). First verify of the task: every case, report `N cases: ✅ X, ❌ Y, ⛔ Z (why)`. Every later retest: only the cases `select-cases.mjs --since <last tested sha>` returns (+ new cases for its `unmatched` files), not the whole table.
 
 ## Where to test, and the loop
 Follow `.claude/workflow/test-loop.md`: ask the owner once per task **local or staging** (`test_target:` in `progress.md`), then loop test → fix → commit+push → retest until every item passes. Local: the stack is released when the loop ends. Staging: the `<integration-branch>` session merges + deploys; this session only monitors, then retests.
 
 ## Browser
-Every page is opened the `/ship-verify` way: environment check, then the browser tool (profile §4) on the feature's route, waiting for its ready text. Do not improvise URLs or wait loops.
+Every page is opened the `/ship-verify` way: environment check, then the browser tool (profile §4) on the feature's route, waiting for its ready text.
 
 ## FE
 1. Run the changed code where it can be seen:

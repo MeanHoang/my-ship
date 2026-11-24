@@ -13,8 +13,11 @@ Applies to every flow and every role that talks to the owner (in practice: the p
 - The same question twice. A pending question lives once in `progress.md` ("Waiting on user"); do not repeat it in later turns.
 Why: *"có gì đâu mà grill me ??? lỗi quá rõ ràng ấy"* · *"2 câu này dễ mà bn tự sửa"* (2026-09, the owner's notes §1.2).
 
+## Not before the problem is confirmed
+In `/ship`, no grill question before Gate 0 (`.claude/workflow/blocks/G0-problem.md`) is confirmed by the owner (`progress.md` `gate0: confirmed`). Questions about a problem he has not yet seen explained waste his answers (owner 2026-11-16).
+
 ## Where
-Batch questions at the fixed gates: bug verdict · Gate 1 · Gate 2 · FE live-fix approval (K3) · each commit · before push. Mid-coding only for a genuine discovery (`ship-core.md` A/B/C). Step-1 business grill (analyze-task) stays one question per turn.
+Batch questions at the fixed gates: bug verdict · Gate 0 (only "đúng vấn đề chưa?") · Gate 1 · Gate 2 · FE live-fix approval (K3) · each commit · before push. Mid-coding only for a genuine discovery (`ship-core.md` A/B/C). Step-1 business grill (analyze-task) stays one question per turn.
 
 ## Shape of each question
 ```

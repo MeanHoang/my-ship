@@ -1,0 +1,23 @@
+{
+  "name": "my-ship",
+  "version": "1.0.0",
+  "description": "A gated, evidence-first workflow kit for Claude Code: install the ship-* skills into any project",
+  "type": "module",
+  "bin": {
+    "my-ship": "bin/my-ship.mjs"
+  },
+  "files": [
+    "bin/",
+    ".claude/",
+    "ship-profile.example.md",
+    "install.sh",
+    "README.md"
+  ],
+  "engines": {
+    "node": ">=18.17"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/MeanHoang/my-ship.git"
+  }
+}

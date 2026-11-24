@@ -94,13 +94,20 @@ Every dispatch passes `model` explicitly (an omitted model inherits the session'
 `sonnet` by default (product, implementer, verifier) · `fable` for reviewer, scout and test-designer · parent `opus` (task sessions start with `--model opus`). Override per project in the profile §7.
 
 ## Install
-Requirements: Claude Code, `git`, `python3`, `jq`.
+Requirements: Claude Code, `git`, `node` ≥ 18.17, `python3`, `jq`. No npm install needed: run the CLI straight from GitHub.
 ```bash
-git clone https://github.com/MeanHoang/my-ship.git
-bash my-ship/install.sh /path/to/your/project
+cd /path/to/your/project
+npx github:MeanHoang/my-ship install            # every ship-* skill + the shared core
+npx github:MeanHoang/my-ship add ship ship-review   # or only the skills you want
+npx github:MeanHoang/my-ship list               # what exists, ✓ = installed here
+npx github:MeanHoang/my-ship update             # re-install your skills from the latest kit
+npx github:MeanHoang/my-ship doctor             # requirements, hook wiring, profile filled in
+npx github:MeanHoang/my-ship remove ship-auto   # or --all (also removes the core and hook wiring)
 ```
-Then fill `/path/to/your/project/.claude/ship-profile.md` (14 short sections: base branch, surfaces, where to read real settings, test targets, dev stack, auth checks, implementers, review command, ship procedure, extra park items, project Standards, edge cases, product context, mockup design system). Restart Claude Code and type `/ship <task>`.
-Re-run `install.sh` to update; your profile is never overwritten. The kit and task state are hidden via `.git/info/exclude` — remove those lines if your team wants to commit it.
+Every skill reads the same shared core (`.claude/workflow`, `roles`, `hooks`, `scripts`), so `add` always installs it. Hooks are merged into `.claude/settings.local.json` (your own hooks stay), `.claude/ship-profile.md` is created once and never overwritten, the kit is hidden from git through `.git/info/exclude` (remove those lines if your team wants to commit it), and `.claude/my-ship.json` records the version and skills installed.
+
+Then fill `.claude/ship-profile.md` (14 short sections: base branch, surfaces, where to read real settings, test targets, dev stack, auth checks, implementers, review command, ship procedure, extra park items, project Standards, edge cases, product context, mockup design system), check with `doctor`, restart Claude Code and type `/ship <task>`.
+`bash install.sh <project>` still works and runs `my-ship install`.
 
 ## Layout
 ```
